@@ -1,0 +1,129 @@
+{
+    "interactionModel": {
+        "languageModel": {
+            "invocationName": "daily dungeon",
+            "intents": [
+                {
+                    "name": "AMAZON.CancelIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.HelpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.StopIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.YesIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.FallbackIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NoIntent",
+                    "samples": []
+                },
+                {
+                    "name": "NumberGuessIntent",
+                    "slots": [
+                        {
+                            "name": "number",
+                            "type": "AMAZON.NUMBER"
+                        }
+                    ],
+                    "samples": [
+                        "{number}",
+                        "is it {number}",
+                        "how about {number}",
+                        "could be {number}"
+                    ]
+                },
+                {
+                    "name": "BossInfoIntent",
+                    "slots": [
+                        {
+                            "name": "bossname",
+                            "type": "AMAZON.SearchQuery"
+                        }
+                    ],
+                    "samples": [
+                        "tell me about {bossname}"
+                    ]
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "NextLevelIntent",
+                    "slots": [],
+                    "samples": [
+                        "go to the next level",
+                        "head to the next level"
+                    ]
+                },
+                {
+                    "name": "CheckSkillsIntent",
+                    "slots": [],
+                    "samples": [
+                        "show me my skills",
+                        "i want to see my skills",
+                        "i want to check my skills"
+                    ]
+                },
+                {
+                    "name": "CheckStatusIntent",
+                    "slots": [],
+                    "samples": [
+                        "my status",
+                        "show me my status",
+                        "i want to check my status"
+                    ]
+                },
+                {
+                    "name": "ChangeSkillsIntent",
+                    "slots": [
+                        {
+                            "name": "skill",
+                            "type": "SKILL"
+                        }
+                    ],
+                    "samples": [
+                        "change my skills to {skill} {skill}"
+                    ]
+                }
+            ],
+            "types": [
+                {
+                    "name": "SKILL",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "Blitz Beat"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Improve Concentration"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Double Strafe"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Arrow Repel"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    }
+}
