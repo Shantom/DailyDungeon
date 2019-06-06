@@ -1,0 +1,4 @@
+.venv/
+.vscode/
+hooks/
+lambda/py/lambda_upload
