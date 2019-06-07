@@ -42,7 +42,7 @@ def launch_request_handler(handler_input):
 
         attr = tree()
         attr['default_char'] = 0
-        attr['characters']['0'] = Character()
+        attr['characters']['0'] = Character().to_dict()
 
         handler_input.attributes_manager.persistent_attributes = attr
         handler_input.attributes_manager.save_persistent_attributes()
