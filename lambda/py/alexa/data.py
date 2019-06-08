@@ -16,6 +16,8 @@ EXP_TO_LEVEL_UP = [
     180000, #15
 ]
 
+COIN_PER_ROUND = 150
+
 EXP_PER_ROUND = [
     100, #1
     115,

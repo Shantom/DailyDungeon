@@ -15,7 +15,9 @@ from ask_sdk_core.handler_input import HandlerInput
 from ask_sdk_model import Response
 from alexa.character import Character
 
-tree = lambda: defaultdict(tree)
+
+def tree(): return defaultdict(tree)
+
 
 SKILL_NAME = 'Daily Dungeon Game'
 sb = StandardSkillBuilder(table_name="DailyDungeon", auto_create_table=True)
@@ -31,8 +33,9 @@ def launch_request_handler(handler_input):
     """
     attr = handler_input.attributes_manager.persistent_attributes
     session_attr = tree()
-    
+
     if not attr:
+        # create a new one
         session_attr['game_state'] = "WAIT_FOR_CREATION"
 
         speech_text = (
@@ -49,25 +52,36 @@ def launch_request_handler(handler_input):
 
         handler_input.response_builder.speak(speech_text).ask(reprompt)
     else:
+        # load the one and claim trophy
+
+        attr = handler_input.attributes_manager.save_persistent_attributes
+        attr = attr['character']['{}'.format(attr['default_char'])]
+
+        cur_char = Character(attr)
+        cur_char.claim_loot()
 
         speech_text = (
             "Welcome to Daily Dungeon."
-            "Logging into your character of level-9 and Dungeon of floor-4. ")
-        reprompt = "Would you like to create a new character?"
+            "Logging into your character of level-{} and Dungeon of floor-{}. "
+            "I have claimed the trophy for you."
+            .format(cur_char.level, cur_char.floor)
+        )
 
-        handler_input.response_builder.speak(speech_text).ask(reprompt)
+        handler_input.response_builder.speak(speech_text)
 
     handler_input.attributes_manager.session_attributes = session_attr
 
     return handler_input.response_builder.response
 
+
 @sb.request_handler(can_handle_func=is_intent_name("BossInfoIntent"))
 def hello_world_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     speech_text = "Baphomet is a legendary notorious demon that lives in the deep jungle. "
-    
+
     handler_input.response_builder.speak(speech_text)
     return handler_input.response_builder.response
+
 
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.HelpIntent"))
 def help_intent_handler(handler_input):
@@ -106,6 +120,7 @@ def session_ended_request_handler(handler_input):
             handler_input.request_envelope.request.reason))
     return handler_input.response_builder.response
 
+
 def currently_playing(handler_input):
     # type: (HandlerInput) -> bool
     """Function that acts as can handle for game state."""
@@ -117,6 +132,7 @@ def currently_playing(handler_input):
         is_currently_playing = True
 
     return is_currently_playing
+
 
 @sb.request_handler(can_handle_func=lambda input:
                     not currently_playing(input) and
@@ -137,6 +153,7 @@ def yes_handler(handler_input):
     handler_input.response_builder.speak(speech_text).ask(reprompt)
     return handler_input.response_builder.response
 
+
 @sb.request_handler(can_handle_func=lambda input:
                     not currently_playing(input) and
                     is_intent_name("AMAZON.NoIntent")(input))
@@ -156,6 +173,7 @@ def no_handler(handler_input):
 
     handler_input.response_builder.speak(speech_text)
     return handler_input.response_builder.response
+
 
 @sb.request_handler(can_handle_func=lambda input:
                     currently_playing(input) and
@@ -197,6 +215,7 @@ def number_guess_handler(handler_input):
     handler_input.response_builder.speak(speech_text).ask(reprompt)
     return handler_input.response_builder.response
 
+
 @sb.request_handler(can_handle_func=lambda input:
                     is_intent_name("AMAZON.FallbackIntent")(input) or
                     is_intent_name("AMAZON.YesIntent")(input) or
@@ -210,7 +229,7 @@ def fallback_handler(handler_input):
     session_attr = handler_input.attributes_manager.session_attributes
 
     if ("game_state" in session_attr and
-            session_attr["game_state"]=="STARTED"):
+            session_attr["game_state"] == "STARTED"):
         speech_text = (
             "The {} skill can't help you with that.".format(SKILL_NAME))
         # reprompt = "Please guess a number between 0 and 100."
@@ -222,6 +241,7 @@ def fallback_handler(handler_input):
     handler_input.response_builder.speak(speech_text)
     return handler_input.response_builder.response
 
+
 @sb.request_handler(can_handle_func=lambda input: True)
 def unhandled_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
@@ -229,6 +249,7 @@ def unhandled_intent_handler(handler_input):
     speech = "Say yes to continue or no to end the game!!"
     handler_input.response_builder.speak(speech).ask(speech)
     return handler_input.response_builder.response
+
 
 @sb.exception_handler(can_handle_func=lambda i, e: True)
 def all_exception_handler(handler_input, exception):
@@ -240,6 +261,7 @@ def all_exception_handler(handler_input, exception):
     speech = "Sorry, I can't understand that. Please say again!!"
     handler_input.response_builder.speak(speech).ask(speech)
     return handler_input.response_builder.response
+
 
 @sb.global_response_interceptor()
 def log_response(handler_input, response):
