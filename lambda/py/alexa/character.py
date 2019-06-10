@@ -1,5 +1,7 @@
 import time
 from . import data
+from .battle import Battle
+from .mob import Mob
 
 
 class Character:
@@ -16,10 +18,14 @@ class Character:
             self.hp = 200
             self.mp = 100
             self.cur_skill_set = []
+            self.speed = 100
+            self.cast_speed = 100
             self.last_offline_time = int(time.time())
             self.sec_per_round = 20
         else:
             self.from_dict(char_data)
+        self.attack_gauge = 100
+        self.cast_gauge = 1000
 
     def check_level_up(self):
         while self.exp >= data.EXP_TO_LEVEL_UP[self.level]:
@@ -34,7 +40,7 @@ class Character:
         cur_time = int(time.time())
         passing_time = cur_time - self.last_offline_time
         self.exp += (passing_time // self.sec_per_round) * \
-            data.EXP_PER_ROUND[self.floor]
+            data.EXP_PER_ROUND[int(self.floor)]
 
     def gain_coin_by_time(self):
         cur_time = int(time.time())
@@ -44,6 +50,7 @@ class Character:
     def claim_loot(self):
         self.gain_coin_by_time()
         self.gain_exp_by_time()
+        self.check_level_up()
 
     def to_dict(self):
         ret = dict()
@@ -57,21 +64,34 @@ class Character:
         ret['hp'] = self.hp
         ret['mp'] = self.mp
         ret['cur_skill_set'] = self.cur_skill_set
+        ret['speed'] = self.speed
+        ret['cast_speed'] = self.cast_speed
         ret['last_offline_time'] = self.last_offline_time
         ret['sec_per_round'] = self.sec_per_round
 
         return ret
 
     def from_dict(self, char_data):
-        self.level = char_data['level']
-        self.floor = char_data['floor']
-        self.exp = char_data['exp']
-        self.coin = char_data['coin']
+        self.level = int(char_data['level'])
+        self.floor = int(char_data['floor'])
+        self.exp = int(char_data['exp'])
+        self.coin = int(char_data['coin'])
         self.job = char_data['job']
-        self.attack = char_data['attack']
-        self.defense = char_data['defense']
-        self.hp = char_data['hp']
-        self.mp = char_data['mp']
+        self.attack = int(char_data['attack'])
+        self.defense = int(char_data['defense'])
+        self.hp = int(char_data['hp'])
+        self.mp = int(char_data['mp'])
         self.cur_skill_set = char_data['cur_skill_set']
-        self.last_offline_time = char_data['last_offline_time']
-        self.sec_per_round = char_data['sec_per_round']
+        self.speed = int(char_data['speed'])
+        self.cast_speed = int(char_data['cast_speed'])
+        self.last_offline_time = int(char_data['last_offline_time'])
+        self.sec_per_round = int(char_data['sec_per_round'])
+
+    def battle_with_boss(self):
+        # TODO: a battle here
+        bat = Battle(self, Mob('Awakened Shrub'))
+        if bat.fight():
+            self.floor += 1
+            return True
+        else:
+            return False

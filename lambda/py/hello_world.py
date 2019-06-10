@@ -39,26 +39,22 @@ def launch_request_handler(handler_input):
         session_attr['game_state'] = "WAIT_FOR_CREATION"
 
         speech_text = (
-            "Welcome to Daily Dungeon. I don’t think I have any of your characters here. "
-            "Would you like to create one?")
-        reprompt = "Would you like to create a new character?"
+            "Welcome to Daily Dungeon."
+            "It seems you don't have a character here, so I just created one for you")
 
-        attr = tree()
-        attr['default_char'] = 0
-        attr['characters']['0'] = Character().to_dict()
+        attr = Character().to_dict()
 
         handler_input.attributes_manager.persistent_attributes = attr
-        handler_input.attributes_manager.save_persistent_attributes()
 
-        handler_input.response_builder.speak(speech_text).ask(reprompt)
+        handler_input.response_builder.speak(speech_text)
     else:
         # load the one and claim trophy
 
-        attr = handler_input.attributes_manager.save_persistent_attributes
-        attr = attr['character']['{}'.format(attr['default_char'])]
-
+        attr = handler_input.attributes_manager.persistent_attributes
         cur_char = Character(attr)
         cur_char.claim_loot()
+
+        handler_input.attributes_manager.persistent_attributes = cur_char.to_dict()
 
         speech_text = (
             "Welcome to Daily Dungeon."
@@ -70,7 +66,28 @@ def launch_request_handler(handler_input):
         handler_input.response_builder.speak(speech_text)
 
     handler_input.attributes_manager.session_attributes = session_attr
+    handler_input.attributes_manager.save_persistent_attributes()
 
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("ChallengeFloorIntent"))
+def challenge_floor_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+
+    attr = handler_input.attributes_manager.persistent_attributes
+    cur_char = Character(attr)
+
+    if cur_char.battle_with_boss():
+        speech_text = "You passed the challenge, welcome to floor-{}".format(
+            cur_char.floor)
+    else:
+        speech_text = 'Sorry but you did not pass the boss'
+
+    handler_input.attributes_manager.persistent_attributes = cur_char.to_dict()
+    handler_input.attributes_manager.save_persistent_attributes()
+
+    handler_input.response_builder.speak(speech_text)
     return handler_input.response_builder.response
 
 

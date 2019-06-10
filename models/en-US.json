@@ -89,17 +89,27 @@
                     "slots": [
                         {
                             "name": "skill",
-                            "type": "SKILL"
+                            "type": "LIST_OF_SKILL"
                         }
                     ],
                     "samples": [
                         "change my skills to {skill} {skill}"
                     ]
+                },
+                {
+                    "name": "ChallengeFloorIntent",
+                    "slots": [],
+                    "samples": [
+                        "challenge the boss",
+                        "challenge the floor",
+                        "I want to challenge the floor",
+                        "I want to challenge the boss"
+                    ]
                 }
             ],
             "types": [
                 {
-                    "name": "SKILL",
+                    "name": "LIST_OF_SKILL",
                     "values": [
                         {
                             "name": {
