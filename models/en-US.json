@@ -105,6 +105,13 @@
                         "I want to challenge the floor",
                         "I want to challenge the boss"
                     ]
+                },
+                {
+                    "name": "BattleLogIntent",
+                    "slots": [],
+                    "samples": [
+                        "I want to check my last battle"
+                    ]
                 }
             ],
             "types": [

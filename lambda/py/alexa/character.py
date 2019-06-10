@@ -90,8 +90,11 @@ class Character:
     def battle_with_boss(self):
         # TODO: a battle here
         bat = Battle(self, Mob('Awakened Shrub'))
-        if bat.fight():
+        is_win = bat.fight()
+        log_battle = bat.log_info
+        if is_win:
             self.floor += 1
-            return True
+            return True, log_battle
         else:
-            return False
+            return False, log_battle
+        

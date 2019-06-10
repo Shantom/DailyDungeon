@@ -13,6 +13,8 @@ class Battle:
         self.player_queue = self.player.cur_skill_set[:]
         self.mob_queue = self.mob.cur_skill_set[:]
 
+        self.log_info = []
+
     def tick(self):
         self.player.attack_gauge += 1
         self.mob.attack_gauge += 1
@@ -24,17 +26,34 @@ class Battle:
             self.player_attack_gauge = 0
             amount = self.player.attack - self.mob.defense
             self.mob.hp -= amount
+            self.log('You hit the monster, which gives it {} damage'.format(amount))
         else:
             self.mob_attack_gauge = 0
             amount = self.mob.attack - self.player.defense
             self.player.hp -= amount
+            self.log(
+                'The monster hit you, which gives you {} damage'.format(amount))
 
-    def move(self, move, caster, target):
-        if caster.mp >= move['mp']:
-            caster.mp -= move['mp']
-            caster.cast_gauge -= int(move['cast'] * 100 / caster.cast_speed)
-            damage = (caster.attack-target.defense)*move['rate']
-            target.hp -= damage
+    def move(self, move, is_player=True):
+        if is_player:
+            if self.player.mp >= move['mp']:
+                self.player.mp -= move['mp']
+                self.player.cast_gauge -= int(move['cast']
+                                              * 100 / self.player.cast_speed)
+                damage = (self.player.attack-self.mob.defense)*move['rate']
+                self.mob.hp -= damage
+                self.log('You use {}, which gives the monster {} damage'.format(
+                    move['name'], damage))
+            else:
+                self.log(
+                    'You don\'t have enough mana to cast {}'.format(move['name']))
+        else:
+            self.mob.cast_gauge -= int(move['cast']
+                                       * 100 / self.mob.cast_speed)
+            damage = (self.mob.attack-self.player.defense)*move['rate']
+            self.player.hp -= damage
+            self.log('The monster use {}, which gives you {} damage'.format(
+                move['name'], damage))
 
     def check_death(self):
         if self.player.hp <= 0:
@@ -56,6 +75,9 @@ class Battle:
                 self.mob_queue.append(ret)
         return ret
 
+    def log(self, info):
+        self.log_info.append(info)
+
     def fight(self):
         while not self.check_death():
             self.tick()
@@ -71,7 +93,7 @@ class Battle:
             if player_next:
                 player_next = data.SKILL_INFO[player_next]
                 if self.player.cast_gauge >= player_next['cast'] / (self.player.cast_speed / 100):
-                    self.move(player_next, self.player, self.mob)
+                    self.move(player_next, True)
                 if self.check_death():
                     break
 
@@ -86,7 +108,7 @@ class Battle:
             if mob_next:
                 mob_next = data.SKILL_INFO[mob_next]
                 if self.mob.cast_gauge >= mob_next['cast'] / (self.mob.cast_speed / 100):
-                    self.move(mob_next, self.mob, self.player)
+                    self.move(mob_next, False)
                 if self.check_death():
                     break
 

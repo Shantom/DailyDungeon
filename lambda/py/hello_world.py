@@ -45,8 +45,6 @@ def launch_request_handler(handler_input):
         attr = Character().to_dict()
 
         handler_input.attributes_manager.persistent_attributes = attr
-
-        handler_input.response_builder.speak(speech_text)
     else:
         # load the one and claim trophy
 
@@ -63,10 +61,10 @@ def launch_request_handler(handler_input):
             .format(cur_char.level, cur_char.floor)
         )
 
-        handler_input.response_builder.speak(speech_text)
-
-    handler_input.attributes_manager.session_attributes = session_attr
     handler_input.attributes_manager.save_persistent_attributes()
+
+    handler_input.response_builder.speak(
+        speech_text).ask('what would you like to do')
 
     return handler_input.response_builder.response
 
@@ -76,9 +74,13 @@ def challenge_floor_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
 
     attr = handler_input.attributes_manager.persistent_attributes
+    session_attr = handler_input.attributes_manager.session_attributes
     cur_char = Character(attr)
 
-    if cur_char.battle_with_boss():
+    is_win, log_battle = cur_char.battle_with_boss()
+    session_attr['last_battle_log'] = log_battle
+
+    if is_win:
         speech_text = "You passed the challenge, welcome to floor-{}".format(
             cur_char.floor)
     else:
@@ -86,6 +88,18 @@ def challenge_floor_intent_handler(handler_input):
 
     handler_input.attributes_manager.persistent_attributes = cur_char.to_dict()
     handler_input.attributes_manager.save_persistent_attributes()
+
+    handler_input.response_builder.speak(
+        speech_text).ask('Do you need the battle info')
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("BattleLogIntent"))
+def battle_log_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+
+    session_attr = handler_input.attributes_manager.session_attributes
+    speech_text = ';'.join(session_attr['last_battle_log'])
 
     handler_input.response_builder.speak(speech_text)
     return handler_input.response_builder.response

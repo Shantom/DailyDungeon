@@ -52,6 +52,7 @@ MOB_INFO = {
 
 SKILL_INFO = {
     'Double Strafe': {
+        'name': 'Double Strafe',
         'rate': 380,
         'cast': 300,
         'mp': 20
