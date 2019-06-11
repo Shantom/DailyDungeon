@@ -39,7 +39,7 @@ def launch_request_handler(handler_input):
         session_attr['game_state'] = "WAIT_FOR_CREATION"
 
         speech_text = (
-            "Welcome to Daily Dungeon."
+            "Welcome to Daily Dungeon. "
             "It seems you don't have a character here, so I just created one for you")
 
         attr = Character().to_dict()
@@ -55,7 +55,7 @@ def launch_request_handler(handler_input):
         handler_input.attributes_manager.persistent_attributes = cur_char.to_dict()
 
         speech_text = (
-            "Welcome to Daily Dungeon."
+            "Welcome to Daily Dungeon. "
             "Logging into your character of level-{} and Dungeon of floor-{}. "
             "I have claimed the trophy for you."
             .format(cur_char.level, cur_char.floor)
@@ -99,9 +99,12 @@ def battle_log_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
 
     session_attr = handler_input.attributes_manager.session_attributes
-    speech_text = ';'.join(session_attr['last_battle_log'])
+    # speech_text = ';'.join(session_attr['last_battle_log'])
 
-    handler_input.response_builder.speak(speech_text)
+    # handler_input.response_builder.speak(speech_text)
+    for line in session_attr['last_battle_log']:
+        handler_input.response_builder.speak(line)
+
     return handler_input.response_builder.response
 
 

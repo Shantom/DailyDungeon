@@ -23,13 +23,13 @@ class Battle:
 
     def normal_attack(self, is_player=True):
         if is_player:  # if it is the player to move
-            self.player_attack_gauge = 0
-            amount = self.player.attack - self.mob.defense
+            self.player.attack_gauge = 0
+            amount = max(self.player.attack - self.mob.defense, 0)
             self.mob.hp -= amount
             self.log('You hit the monster, which gives it {} damage'.format(amount))
         else:
-            self.mob_attack_gauge = 0
-            amount = self.mob.attack - self.player.defense
+            self.mob.attack_gauge = 0
+            amount = max(self.mob.attack - self.player.defense, 0)
             self.player.hp -= amount
             self.log(
                 'The monster hit you, which gives you {} damage'.format(amount))
@@ -40,7 +40,8 @@ class Battle:
                 self.player.mp -= move['mp']
                 self.player.cast_gauge -= int(move['cast']
                                               * 100 / self.player.cast_speed)
-                damage = (self.player.attack-self.mob.defense)*move['rate']
+                damage = int(
+                    max(self.player.attack-self.mob.defense, 0)*move['rate']/100)
                 self.mob.hp -= damage
                 self.log('You use {}, which gives the monster {} damage'.format(
                     move['name'], damage))
@@ -50,7 +51,8 @@ class Battle:
         else:
             self.mob.cast_gauge -= int(move['cast']
                                        * 100 / self.mob.cast_speed)
-            damage = (self.mob.attack-self.player.defense)*move['rate']
+            damage = int(
+                max(self.mob.attack-self.player.defense, 0)*move['rate']/100)
             self.player.hp -= damage
             self.log('The monster use {}, which gives you {} damage'.format(
                 move['name'], damage))

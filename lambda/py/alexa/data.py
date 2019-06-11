@@ -40,7 +40,7 @@ EXP_PER_ROUND = [
 
 MOB_INFO = {
     'Awakened Shrub': {
-        'attack': 10,
+        'attack': 20,
         'defense': 0,
         'hp': 300,
         'mp': 0,

@@ -14,10 +14,10 @@ class Character:
             self.coin = 0
             self.job = 'Novice'
             self.attack = 50
-            self.defense = 30
+            self.defense = 10
             self.hp = 200
             self.mp = 100
-            self.cur_skill_set = []
+            self.cur_skill_set = ['Double Strafe']
             self.speed = 100
             self.cast_speed = 100
             self.last_offline_time = int(time.time())
@@ -97,4 +97,3 @@ class Character:
             return True, log_battle
         else:
             return False, log_battle
-        
