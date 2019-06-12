@@ -99,11 +99,17 @@ def battle_log_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
 
     session_attr = handler_input.attributes_manager.session_attributes
-    # speech_text = ';'.join(session_attr['last_battle_log'])
+    if 'last_battle_log' in session_attr.keys():
+        speech_text = '.\n'.join(session_attr['last_battle_log'])
+        logger.info('Telling battle info.' + speech_text)
+    else:
+        speech_text = 'Seems you don\'t have a battle.'
+        logger.info('No battle info.')
 
-    # handler_input.response_builder.speak(speech_text)
-    for line in session_attr['last_battle_log']:
-        handler_input.response_builder.speak(line)
+    # for line in session_attr['last_battle_log']:
+    #     handler_input.response_builder.speak(line)
+
+    handler_input.response_builder.speak(speech_text)
 
     return handler_input.response_builder.response
 
