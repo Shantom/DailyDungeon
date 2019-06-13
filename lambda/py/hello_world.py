@@ -3,6 +3,7 @@
 # This is a High Low Guess game Alexa Skill.
 # The skill serves as a simple sample on how to use the
 # persistence attributes and persistence adapter features in the SDK.
+from html.parser import HTMLParser
 import random
 import logging
 import time
@@ -11,6 +12,7 @@ from collections import defaultdict
 from ask_sdk.standard import StandardSkillBuilder
 from ask_sdk_core.utils import is_request_type, is_intent_name
 from ask_sdk_core.handler_input import HandlerInput
+from ask_sdk_model.ui import SimpleCard
 
 from ask_sdk_model import Response
 from alexa.character import Character
@@ -38,13 +40,16 @@ def launch_request_handler(handler_input):
         # create a new one
         session_attr['game_state'] = "WAIT_FOR_CREATION"
 
+        attr = Character().to_dict()
+        handler_input.attributes_manager.persistent_attributes = attr
+
         speech_text = (
             "Welcome to Daily Dungeon. "
             "It seems you don't have a character here, so I just created one for you")
 
-        attr = Character().to_dict()
+        card = SimpleCard(
+            title='Welcome to Daily Dungeon', content='Character created successfully.')
 
-        handler_input.attributes_manager.persistent_attributes = attr
     else:
         # load the one and claim trophy
 
@@ -61,10 +66,15 @@ def launch_request_handler(handler_input):
             .format(cur_char.level, cur_char.floor)
         )
 
+        card = SimpleCard(
+            title='Welcome to Daily Dungeon',
+            content='Your Character\'s Status: \n\tLevel-{}\n\tFloor-{}'
+            .format(cur_char.level, cur_char.floor))
+
     handler_input.attributes_manager.save_persistent_attributes()
 
     handler_input.response_builder.speak(
-        speech_text).ask('what would you like to do')
+        speech_text).ask('what would you like to do').set_card(card)
 
     return handler_input.response_builder.response
 
@@ -308,6 +318,40 @@ def log_response(handler_input, response):
     # type: (HandlerInput, Response) -> None
     """Response logger."""
     logger.info("Response: {}".format(response))
+
+
+class SSMLStripper(HTMLParser):
+    def __init__(self):
+        self.reset()
+        self.full_str_list = []
+        self.strict = False
+        self.convert_charrefs = True
+
+    def handle_data(self, d):
+        self.full_str_list.append(d)
+
+    def get_data(self):
+        return ''.join(self.full_str_list)
+
+
+def convert_speech_to_text(ssml_speech):
+    """convert ssml speech to text, by removing html tags."""
+    # type: (str) -> str
+    s = SSMLStripper()
+    s.feed(ssml_speech)
+    return s.get_data()
+
+
+@sb.global_response_interceptor()
+def add_card(handler_input, response):
+    """Add a card by translating ssml text to card content."""
+    # type: (HandlerInput, Response) -> None
+    if response.card:
+        return
+    response.card = SimpleCard(
+        title='Daily Dungeon',
+        content=convert_speech_to_text(response.output_speech.ssml)
+    )
 
 
 handler = sb.lambda_handler()
