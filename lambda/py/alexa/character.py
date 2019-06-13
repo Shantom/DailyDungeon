@@ -51,6 +51,7 @@ class Character:
         self.gain_coin_by_time()
         self.gain_exp_by_time()
         self.check_level_up()
+        self.last_offline_time = int(time.time())
 
     def to_dict(self):
         ret = dict()

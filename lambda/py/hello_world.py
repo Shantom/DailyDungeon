@@ -46,7 +46,7 @@ def launch_request_handler(handler_input):
 
         speech_text = (
             "Welcome to Daily Dungeon. "
-            "It seems you don't have a character here, so I just created one for you")
+            "Seems you don't have a character here, so I just created one for you")
 
         card = SimpleCard(
             title='Welcome to Daily Dungeon', content='Character created successfully.')
