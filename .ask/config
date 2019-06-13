@@ -13,7 +13,7 @@
             "codeUri": "lambda/py/lambda_upload",
             "functionName": "ask-custom-Demo-default",
             "handler": "hello_world.handler",
-            "revisionId": "11379c20-19aa-4766-924c-38ea3612a592",
+            "revisionId": "d3401fc6-beae-4fb7-9f92-d0bb5693d511",
             "runtime": "python3.6"
           }
         ],

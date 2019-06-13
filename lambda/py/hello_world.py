@@ -120,7 +120,8 @@ def battle_log_intent_handler(handler_input):
     # for line in session_attr['last_battle_log']:
     #     handler_input.response_builder.speak(line)
 
-    handler_input.response_builder.speak(speech_text)
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
 
     return handler_input.response_builder.response
 
@@ -139,7 +140,7 @@ def boss_info_intent_handler(handler_input):
 
     if query and query in data.MOB_INFO:
         info = data.MOB_INFO[query]
-        speech_text = 'Boss {}. It has attack of {}, defense of {}.'.format(
+        speech_text = 'Boss {}. It has attack of {}, defense of {}. '.format(
             query, info['attack'], info['defense'])
         if len(info['skills']) == 1:
             speech_text += 'Also, it can use {}'.format(info['skills'][0])
@@ -149,7 +150,26 @@ def boss_info_intent_handler(handler_input):
     else:
         speech_text = "You can ask me the current floor's boss or any boss with a name "
 
-    handler_input.response_builder.speak(speech_text)
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("CheckStatusIntent"))
+def check_status_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    attr = handler_input.attributes_manager.persistent_attributes
+    cur_char = Character(attr)
+    speech_text = "Your character is level-{} and on floor-{}. ".format(
+        cur_char.level, cur_char.floor)
+    speech_text += 'He has attack of {} and defense of {}. '.format(
+        cur_char.attack, cur_char.defense)
+
+    card = SimpleCard(title='Chracter Status', content='\tLevel:{}\tFloor:{}\n\tJob:{}\n\tHP:{}\tMP:{}\n\tAttack:{}\tDefense:{}'.format(
+        cur_char.level, cur_char.floor, cur_char.job, cur_char.hp, cur_char.mp, cur_char.attack, cur_char.defense))
+
+    handler_input.response_builder.speak(
+        speech_text).set_card(card).set_should_end_session(False)
     return handler_input.response_builder.response
 
 
@@ -316,7 +336,7 @@ def fallback_handler(handler_input):
 def unhandled_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for all other unhandled requests."""
-    speech = "Say yes to continue or no to end the game!!"
+    speech = "I'm not sure what you are saying"
     handler_input.response_builder.speak(speech).ask(speech)
     return handler_input.response_builder.response
 
