@@ -38,6 +38,11 @@ EXP_PER_ROUND = [
     128
 ]
 
+BOSS_OF_FLOOR = [
+    'Awakened Shrub',
+    'Awakened Shrub two'
+]
+
 MOB_INFO = {
     'Awakened Shrub': {
         'attack': 20,
@@ -45,6 +50,15 @@ MOB_INFO = {
         'hp': 300,
         'mp': 0,
         'skills': [],
+        'speed': 100,
+        'cast_speed': 100
+    },
+    'Awakened Shrub two': {
+        'attack': 20,
+        'defense': 0,
+        'hp': 3000,
+        'mp': 0,
+        'skills': ['Double Strafe'],
         'speed': 100,
         'cast_speed': 100
     }

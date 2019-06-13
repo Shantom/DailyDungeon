@@ -16,6 +16,7 @@ from ask_sdk_model.ui import SimpleCard
 
 from ask_sdk_model import Response
 from alexa.character import Character
+from alexa import data
 
 
 def tree(): return defaultdict(tree)
@@ -94,7 +95,7 @@ def challenge_floor_intent_handler(handler_input):
         speech_text = "You passed the challenge, welcome to floor-{}".format(
             cur_char.floor)
     else:
-        speech_text = 'Sorry but you did not pass the boss'
+        speech_text = 'Sorry but you did not pass the boss. Say review last battle to prepare next try'
 
     handler_input.attributes_manager.persistent_attributes = cur_char.to_dict()
     handler_input.attributes_manager.save_persistent_attributes()
@@ -125,9 +126,28 @@ def battle_log_intent_handler(handler_input):
 
 
 @sb.request_handler(can_handle_func=is_intent_name("BossInfoIntent"))
-def hello_world_intent_handler(handler_input):
+def boss_info_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
-    speech_text = "Baphomet is a legendary notorious demon that lives in the deep jungle. "
+    if not hasattr(handler_input.request_envelope.request.intent.slots, 'bossname'):
+        attr = handler_input.attributes_manager.persistent_attributes
+        cur_char = Character(attr)
+        query = data.BOSS_OF_FLOOR[cur_char.floor - 1]
+    else:
+        query = handler_input.request_envelope.request.intent.slots.bossname.value
+
+    logger.info('query:'+query)
+
+    if query and query in data.MOB_INFO:
+        info = data.MOB_INFO[query]
+        speech_text = 'Boss {}. It has attack of {}, defense of {}.'.format(
+            query, info['attack'], info['defense'])
+        if len(info['skills']) == 1:
+            speech_text += 'Also, it can use {}'.format(info['skills'][0])
+        elif len(info['skills']) > 1:
+            speech_text += 'Also, it can use {} and {}'.format(
+                ', '.join(info['skills'][:-1]), info['skills'])
+    else:
+        speech_text = "You can ask me the current floor's boss or any boss with a name "
 
     handler_input.response_builder.speak(speech_text)
     return handler_input.response_builder.response
@@ -225,45 +245,45 @@ def no_handler(handler_input):
     return handler_input.response_builder.response
 
 
-@sb.request_handler(can_handle_func=lambda input:
-                    currently_playing(input) and
-                    is_intent_name("NumberGuessIntent")(input))
-def number_guess_handler(handler_input):
-    # type: (HandlerInput) -> Response
-    """Handler for processing guess with target."""
-    session_attr = handler_input.attributes_manager.session_attributes
-    target_num = session_attr["guess_number"]
-    guess_num = int(handler_input.request_envelope.request.intent.slots[
-        "number"].value)
+# @sb.request_handler(can_handle_func=lambda input:
+#                     currently_playing(input) and
+#                     is_intent_name("NumberGuessIntent")(input))
+# def number_guess_handler(handler_input):
+#     # type: (HandlerInput) -> Response
+#     """Handler for processing guess with target."""
+#     session_attr = handler_input.attributes_manager.session_attributes
+#     target_num = session_attr["guess_number"]
+#     guess_num = int(handler_input.request_envelope.request.intent.slots[
+#         "number"].value)
 
-    session_attr["no_of_guesses"] += 1
+#     session_attr["no_of_guesses"] += 1
 
-    if guess_num > target_num:
-        speech_text = (
-            "{} is too high. Try saying a smaller number.".format(guess_num))
-        reprompt = "Try saying a smaller number."
-    elif guess_num < target_num:
-        speech_text = (
-            "{} is too low. Try saying a larger number.".format(guess_num))
-        reprompt = "Try saying a larger number."
-    elif guess_num == target_num:
-        speech_text = (
-            "Congratulations. {} is the correct guess. "
-            "You guessed the number in {} guesses. "
-            "Would you like to play a new game?".format(
-                guess_num, session_attr["no_of_guesses"]))
-        reprompt = "Say yes to start a new game or no to end the game"
-        session_attr["games_played"] += 1
-        session_attr["game_state"] = "ENDED"
+#     if guess_num > target_num:
+#         speech_text = (
+#             "{} is too high. Try saying a smaller number.".format(guess_num))
+#         reprompt = "Try saying a smaller number."
+#     elif guess_num < target_num:
+#         speech_text = (
+#             "{} is too low. Try saying a larger number.".format(guess_num))
+#         reprompt = "Try saying a larger number."
+#     elif guess_num == target_num:
+#         speech_text = (
+#             "Congratulations. {} is the correct guess. "
+#             "You guessed the number in {} guesses. "
+#             "Would you like to play a new game?".format(
+#                 guess_num, session_attr["no_of_guesses"]))
+#         reprompt = "Say yes to start a new game or no to end the game"
+#         session_attr["games_played"] += 1
+#         session_attr["game_state"] = "ENDED"
 
-        handler_input.attributes_manager.persistent_attributes = session_attr
-        handler_input.attributes_manager.save_persistent_attributes()
-    else:
-        speech_text = "Sorry, I didn't get that. Try saying a number."
-        reprompt = "Try saying a number."
+#         handler_input.attributes_manager.persistent_attributes = session_attr
+#         handler_input.attributes_manager.save_persistent_attributes()
+#     else:
+#         speech_text = "Sorry, I didn't get that. Try saying a number."
+#         reprompt = "Try saying a number."
 
-    handler_input.response_builder.speak(speech_text).ask(reprompt)
-    return handler_input.response_builder.response
+#     handler_input.response_builder.speak(speech_text).ask(reprompt)
+#     return handler_input.response_builder.response
 
 
 @sb.request_handler(can_handle_func=lambda input:

@@ -51,7 +51,8 @@
                         }
                     ],
                     "samples": [
-                        "tell me about {bossname}"
+                        "tell me about {bossname}",
+                        "tell me about the boss on this floor"
                     ]
                 },
                 {
