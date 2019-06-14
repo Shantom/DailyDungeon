@@ -26,13 +26,15 @@ class Battle:
             self.player.attack_gauge = 0
             amount = max(self.player.attack - self.mob.defense, 0)
             self.mob.hp -= amount
-            self.log('You hit the monster, which gives it {} damage'.format(amount))
+            self.log('You hit the monster, which gives it {} damage, HP {} left'
+                     .format(amount, max(0, self.mob.hp)))
         else:
             self.mob.attack_gauge = 0
             amount = max(self.mob.attack - self.player.defense, 0)
             self.player.hp -= amount
             self.log(
-                'The monster hit you, which gives you {} damage'.format(amount))
+                'The monster hit you, which gives you {} damage, HP {} left'
+                .format(amount, max(0, self.player.hp)))
 
     def move(self, move, is_player=True):
         if is_player:
@@ -43,8 +45,8 @@ class Battle:
                 damage = int(
                     max(self.player.attack-self.mob.defense, 0)*move['rate']/100)
                 self.mob.hp -= damage
-                self.log('You use {}, which gives the monster {} damage'.format(
-                    move['name'], damage))
+                self.log('You use {}, which gives the monster {} damage, HP {} left'.format(
+                    move['name'], damage, max(0, self.mob.hp)))
             else:
                 self.log(
                     'You don\'t have enough mana to cast {}'.format(move['name']))
@@ -54,14 +56,14 @@ class Battle:
             damage = int(
                 max(self.mob.attack-self.player.defense, 0)*move['rate']/100)
             self.player.hp -= damage
-            self.log('The monster use {}, which gives you {} damage'.format(
-                move['name'], damage))
+            self.log('The monster use {}, which gives you {} damage, HP {} left'.format(
+                move['name'], damage, max(0, self.player.hp)))
 
     def check_death(self):
         if self.player.hp <= 0:
             return 'player'
         elif self.mob.hp <= 0:
-            return 'mob'
+            return 'monster'
         else:
             return False
 
@@ -113,5 +115,9 @@ class Battle:
                     self.move(mob_next, False)
                 if self.check_death():
                     break
-
-        return self.check_death() == 'mob'
+        ret = self.check_death() == 'monster'
+        if ret:
+            self.log('The monster is dead.')
+        else:
+            self.log('You died.')
+        return ret

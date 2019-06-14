@@ -112,7 +112,15 @@
                     "name": "BattleLogIntent",
                     "slots": [],
                     "samples": [
-                        "I want to check my last battle"
+                        "I want to check my last battle",
+                        "review last battle"
+                    ]
+                },
+                {
+                    "name": "EnterMazeIntent",
+                    "slots": [],
+                    "samples": [
+                        "enter the maze"
                     ]
                 }
             ],

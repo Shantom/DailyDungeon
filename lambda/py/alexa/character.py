@@ -8,7 +8,7 @@ class Character:
 
     def __init__(self, char_data=None):
         if not char_data:
-            self.level = 1
+            self.level = 0
             self.floor = 1
             self.exp = 0
             self.coin = 0
@@ -90,7 +90,7 @@ class Character:
 
     def battle_with_boss(self):
         # TODO: a battle here
-        bat = Battle(self, Mob('Awakened Shrub'))
+        bat = Battle(self, Mob(data.BOSS_OF_FLOOR[self.floor-1]))
         is_win = bat.fight()
         log_battle = bat.log_info
         if is_win:

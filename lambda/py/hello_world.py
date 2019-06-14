@@ -41,7 +41,7 @@ def launch_request_handler(handler_input):
         # create a new one
         session_attr['game_state'] = "WAIT_FOR_CREATION"
 
-        attr = Character().to_dict()
+        attr['character'] = Character().to_dict()
         handler_input.attributes_manager.persistent_attributes = attr
 
         speech_text = (
@@ -55,10 +55,10 @@ def launch_request_handler(handler_input):
         # load the one and claim trophy
 
         attr = handler_input.attributes_manager.persistent_attributes
-        cur_char = Character(attr)
+        cur_char = Character(attr['character'])
         cur_char.claim_loot()
 
-        handler_input.attributes_manager.persistent_attributes = cur_char.to_dict()
+        attr['character'] = cur_char.to_dict()
 
         speech_text = (
             "Welcome to Daily Dungeon. "
@@ -80,13 +80,22 @@ def launch_request_handler(handler_input):
     return handler_input.response_builder.response
 
 
+@sb.request_handler(can_handle_func=is_intent_name("EnterMazeIntent"))
+def enter_maze_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    speech_text = "Entering maze"
+
+    handler_input.response_builder.speak(speech_text)
+    return handler_input.response_builder.response
+
+
 @sb.request_handler(can_handle_func=is_intent_name("ChallengeFloorIntent"))
 def challenge_floor_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
 
     attr = handler_input.attributes_manager.persistent_attributes
     session_attr = handler_input.attributes_manager.session_attributes
-    cur_char = Character(attr)
+    cur_char = Character(attr['character'])
 
     is_win, log_battle = cur_char.battle_with_boss()
     session_attr['last_battle_log'] = log_battle
@@ -97,7 +106,7 @@ def challenge_floor_intent_handler(handler_input):
     else:
         speech_text = 'Sorry but you did not pass the boss. Say review last battle to prepare next try'
 
-    handler_input.attributes_manager.persistent_attributes = cur_char.to_dict()
+    attr['character'] = cur_char.to_dict()
     handler_input.attributes_manager.save_persistent_attributes()
 
     handler_input.response_builder.speak(
@@ -117,8 +126,7 @@ def battle_log_intent_handler(handler_input):
         speech_text = 'Seems you don\'t have a battle.'
         logger.info('No battle info.')
 
-    # for line in session_attr['last_battle_log']:
-    #     handler_input.response_builder.speak(line)
+    # TODO: set a readable card here
 
     handler_input.response_builder.speak(
         speech_text).set_should_end_session(False)
@@ -131,7 +139,7 @@ def boss_info_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     if not hasattr(handler_input.request_envelope.request.intent.slots, 'bossname'):
         attr = handler_input.attributes_manager.persistent_attributes
-        cur_char = Character(attr)
+        cur_char = Character(attr['character'])
         query = data.BOSS_OF_FLOOR[cur_char.floor - 1]
     else:
         query = handler_input.request_envelope.request.intent.slots.bossname.value
@@ -140,8 +148,8 @@ def boss_info_intent_handler(handler_input):
 
     if query and query in data.MOB_INFO:
         info = data.MOB_INFO[query]
-        speech_text = 'Boss {}. It has attack of {}, defense of {}. '.format(
-            query, info['attack'], info['defense'])
+        speech_text = 'Boss {}. It has attack of {}, defense of {} and HP of {}'.format(
+            query, info['attack'], info['defense'], info['HP'])
         if len(info['skills']) == 1:
             speech_text += 'Also, it can use {}'.format(info['skills'][0])
         elif len(info['skills']) > 1:
@@ -159,7 +167,7 @@ def boss_info_intent_handler(handler_input):
 def check_status_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     attr = handler_input.attributes_manager.persistent_attributes
-    cur_char = Character(attr)
+    cur_char = Character(attr['character'])
     speech_text = "Your character is level-{} and on floor-{}. ".format(
         cur_char.level, cur_char.floor)
     speech_text += 'He has attack of {} and defense of {}. '.format(
@@ -177,11 +185,10 @@ def check_status_intent_handler(handler_input):
 def help_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for Help Intent."""
+    # TODO: set a speech here
     speech_text = (
-        "I am thinking of a number between zero and one hundred, try to "
-        "guess it and I will tell you if you got it or it is higher or "
-        "lower")
-    reprompt = "Try saying a number."
+        "Here should be a help speech.")
+    reprompt = "Here should be a help reprompt."
 
     handler_input.response_builder.speak(speech_text).ask(reprompt)
     return handler_input.response_builder.response
@@ -205,105 +212,59 @@ def cancel_and_stop_intent_handler(handler_input):
 def session_ended_request_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for Session End."""
+
+    speech_text = "The session ended."
+    handler_input.response_builder.speak(speech_text)
+
     logger.info(
         "Session ended with reason: {}".format(
             handler_input.request_envelope.request.reason))
     return handler_input.response_builder.response
 
 
-def currently_playing(handler_input):
+def currently_in_maze(handler_input):
     # type: (HandlerInput) -> bool
     """Function that acts as can handle for game state."""
-    is_currently_playing = False
+    is_in_maze = False
     session_attr = handler_input.attributes_manager.session_attributes
 
     if ("game_state" in session_attr
-            and session_attr['game_state'] == "STARTED"):
-        is_currently_playing = True
+            and session_attr['game_state'] == "INMAZE"):
+        is_in_maze = True
 
-    return is_currently_playing
+    return is_in_maze
 
 
 @sb.request_handler(can_handle_func=lambda input:
-                    not currently_playing(input) and
+                    not currently_in_maze(input) and
                     is_intent_name("AMAZON.YesIntent")(input))
 def yes_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for Yes Intent, only if the player said yes for
     a new game.
     """
-    session_attr = handler_input.attributes_manager.session_attributes
-    session_attr['game_state'] = "STARTED"
-    session_attr['guess_number'] = random.randint(0, 3)
-    session_attr['no_of_guesses'] = 0
-
-    speech_text = "Great! Try saying a number to start the game."
-    reprompt = "Try saying a number."
+    # TODO: this is when users say yes
+    speech_text = "You said yes."
+    reprompt = "You just said yes."
 
     handler_input.response_builder.speak(speech_text).ask(reprompt)
     return handler_input.response_builder.response
 
 
 @sb.request_handler(can_handle_func=lambda input:
-                    not currently_playing(input) and
+                    not currently_in_maze(input) and
                     is_intent_name("AMAZON.NoIntent")(input))
 def no_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for No Intent, only if the player said no for
     a new game.
     """
-    session_attr = handler_input.attributes_manager.session_attributes
-    session_attr['game_state'] = "ENDED"
-    session_attr['ended_session_count'] += 1
+    # TODO: this is when users say yes
+    speech_text = "You said no."
+    reprompt = "You just said no."
 
-    handler_input.attributes_manager.persistent_attributes = session_attr
-    handler_input.attributes_manager.save_persistent_attributes()
-
-    speech_text = "Ok. See you next time!!"
-
-    handler_input.response_builder.speak(speech_text)
+    handler_input.response_builder.speak(speech_text).ask(reprompt)
     return handler_input.response_builder.response
-
-
-# @sb.request_handler(can_handle_func=lambda input:
-#                     currently_playing(input) and
-#                     is_intent_name("NumberGuessIntent")(input))
-# def number_guess_handler(handler_input):
-#     # type: (HandlerInput) -> Response
-#     """Handler for processing guess with target."""
-#     session_attr = handler_input.attributes_manager.session_attributes
-#     target_num = session_attr["guess_number"]
-#     guess_num = int(handler_input.request_envelope.request.intent.slots[
-#         "number"].value)
-
-#     session_attr["no_of_guesses"] += 1
-
-#     if guess_num > target_num:
-#         speech_text = (
-#             "{} is too high. Try saying a smaller number.".format(guess_num))
-#         reprompt = "Try saying a smaller number."
-#     elif guess_num < target_num:
-#         speech_text = (
-#             "{} is too low. Try saying a larger number.".format(guess_num))
-#         reprompt = "Try saying a larger number."
-#     elif guess_num == target_num:
-#         speech_text = (
-#             "Congratulations. {} is the correct guess. "
-#             "You guessed the number in {} guesses. "
-#             "Would you like to play a new game?".format(
-#                 guess_num, session_attr["no_of_guesses"]))
-#         reprompt = "Say yes to start a new game or no to end the game"
-#         session_attr["games_played"] += 1
-#         session_attr["game_state"] = "ENDED"
-
-#         handler_input.attributes_manager.persistent_attributes = session_attr
-#         handler_input.attributes_manager.save_persistent_attributes()
-#     else:
-#         speech_text = "Sorry, I didn't get that. Try saying a number."
-#         reprompt = "Try saying a number."
-
-#     handler_input.response_builder.speak(speech_text).ask(reprompt)
-#     return handler_input.response_builder.response
 
 
 @sb.request_handler(can_handle_func=lambda input:
@@ -328,7 +289,8 @@ def fallback_handler(handler_input):
             "The {} skill can't help you with that.".format(SKILL_NAME))
         # reprompt = "Say yes to start the game or no to quit."
 
-    handler_input.response_builder.speak(speech_text)
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
     return handler_input.response_builder.response
 
 
