@@ -5,7 +5,6 @@ from .mob import Mob
 
 
 class Character:
-
     def __init__(self, char_data=None):
         if not char_data:
             self.level = 0
@@ -24,6 +23,7 @@ class Character:
             self.sec_per_round = 20
         else:
             self.from_dict(char_data)
+
         self.attack_gauge = 100
         self.cast_gauge = 1000
 
@@ -98,3 +98,52 @@ class Character:
             return True, log_battle
         else:
             return False, log_battle
+
+
+class TempCharacter:
+    def __init__(self, char_data=None):
+        if not char_data:
+            self.attack = 0
+            self.defense = 0
+            self.hp = 0
+            self.mp = 0
+            self.cur_skill_set = []
+            self.speed = 0
+            self.cast_speed = 0
+        else:
+            self.from_dict(char_data)
+
+    def to_dict(self):
+        ret = dict()
+        ret['attack'] = self.attack
+        ret['defense'] = self.defense
+        ret['hp'] = self.hp
+        ret['mp'] = self.mp
+        ret['cur_skill_set'] = self.cur_skill_set
+        ret['speed'] = self.speed
+        ret['cast_speed'] = self.cast_speed
+        return ret
+
+    def from_dict(self, char_data):
+        self.attack = int(char_data['attack'])
+        self.defense = int(char_data['defense'])
+        self.hp = int(char_data['hp'])
+        self.mp = int(char_data['mp'])
+        self.cur_skill_set = char_data['cur_skill_set']
+        self.speed = int(char_data['speed'])
+        self.cast_speed = int(char_data['cast_speed'])
+
+    def process(self, room_type, cur_char):
+        if room_type == 'ATTUP':
+            self.attack += int(cur_char.attack * .2)
+            return 'You found a good sword, which makes your attack increase by 20 percent. '
+        elif room_type == 'HEAL':
+            self.hp += int(cur_char.hp * .3)
+            return 'You found a mysterious portion and drank it all. Your hp recovered 30 percent. '
+        elif room_type == 'POISON':
+            self.hp -= int(cur_char.hp * .3)
+            return 'You found a mysterious portion and drank it all. Your hp lost 30 percent. '
+        elif room_type == 'VISITED':
+            return 'You have been here. There is nothing left.'
+        else:
+            return 'There is nothing in this room'

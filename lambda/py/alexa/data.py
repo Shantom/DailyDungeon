@@ -44,6 +44,15 @@ BOSS_OF_FLOOR = [
 ]
 
 MOB_INFO = {
+    'Monster A': {
+        'attack': 20,
+        'defense': 0,
+        'hp': 100,
+        'mp': 0,
+        'skills': [],
+        'speed': 100,
+        'cast_speed': 100
+    },
     'Awakened Shrub': {
         'attack': 20,
         'defense': 0,

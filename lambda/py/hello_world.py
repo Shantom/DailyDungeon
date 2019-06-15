@@ -7,6 +7,8 @@ from html.parser import HTMLParser
 import random
 import logging
 import time
+import uuid
+import json
 from collections import defaultdict
 
 from ask_sdk.standard import StandardSkillBuilder
@@ -15,7 +17,8 @@ from ask_sdk_core.handler_input import HandlerInput
 from ask_sdk_model.ui import SimpleCard
 
 from ask_sdk_model import Response
-from alexa.character import Character
+from alexa.character import Character, TempCharacter
+from alexa.maze import Maze, Room
 from alexa import data
 
 
@@ -83,9 +86,58 @@ def launch_request_handler(handler_input):
 @sb.request_handler(can_handle_func=is_intent_name("EnterMazeIntent"))
 def enter_maze_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
-    speech_text = "Entering maze"
+    attr = handler_input.attributes_manager.persistent_attributes
+    attr['game_state'] = 'INMAZE'
+    attr['maze'] = Maze().to_dict()
 
-    handler_input.response_builder.speak(speech_text)
+    attr['temp_buff'] = TempCharacter().to_dict()
+
+    speech_text = "You entered the maze. Now pick up a direction and move."
+
+    # logger.info(json.dumps(attr['maze']['cur_room']))
+    # logger.info(json.dumps(attr['maze']['rooms']))
+    # logger.info(json.dumps(attr['temp_buff']))
+
+    handler_input.attributes_manager.save_persistent_attributes()
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("MoveIntent"))
+def move_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    direction = handler_input.request_envelope.request.intent.slots['direction'].value
+    if direction not in ['north', 'south', 'west', 'east']:
+        handler_input.response_builder.speak(
+            'please say a direction').set_should_end_session(False)
+        return handler_input.response_builder.response
+
+    attr = handler_input.attributes_manager.persistent_attributes
+    cur_char = Character(attr['character'])
+
+    maze = Maze(maze_data=attr['maze'])
+    if not getattr(maze.cur_room, direction):  # no way on this direction
+        speech_text = "Sorry, there is no way at {}".format(direction)
+    else:
+        new_room = maze.rooms[getattr(maze.cur_room, direction)]
+        room_type = new_room.room_type
+        temp_buff = TempCharacter(attr['temp_buff'])
+        if room_type == 'BOSS':
+            # TODO: fight a boss
+            speech_text = 'You should fight a boss here.'
+            pass
+        else:
+            speech_text = temp_buff.process(room_type, cur_char)
+            attr['temp_buff'] = temp_buff.to_dict()
+
+        new_room.mark()
+        maze.cur_room = new_room
+
+    attr['maze'] = maze.to_dict()
+    handler_input.attributes_manager.save_persistent_attributes()
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
     return handler_input.response_builder.response
 
 
@@ -148,8 +200,8 @@ def boss_info_intent_handler(handler_input):
 
     if query and query in data.MOB_INFO:
         info = data.MOB_INFO[query]
-        speech_text = 'Boss {}. It has attack of {}, defense of {} and HP of {}'.format(
-            query, info['attack'], info['defense'], info['HP'])
+        speech_text = 'Boss {}. It has attack of {}, defense of {}, and HP of {}'.format(
+            query, info['attack'], info['defense'], info['hp'])
         if len(info['skills']) == 1:
             speech_text += 'Also, it can use {}'.format(info['skills'][0])
         elif len(info['skills']) > 1:
@@ -310,7 +362,7 @@ def all_exception_handler(handler_input, exception):
     respond with custom message.
     """
     logger.error(exception, exc_info=True)
-    speech = "Sorry, I can't understand that. Please say again!!"
+    speech = "Sorry, an exception occurred. Please say again!!"
     handler_input.response_builder.speak(speech).ask(speech)
     return handler_input.response_builder.response
 

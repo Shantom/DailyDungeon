@@ -122,6 +122,18 @@
                     "samples": [
                         "enter the maze"
                     ]
+                },
+                {
+                    "name": "MoveIntent",
+                    "slots": [
+                        {
+                            "name": "direction",
+                            "type": "LIST_OF_DIRECTIONS"
+                        }
+                    ],
+                    "samples": [
+                        "go {direction}"
+                    ]
                 }
             ],
             "types": [
@@ -146,6 +158,31 @@
                         {
                             "name": {
                                 "value": "Arrow Repel"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "LIST_OF_DIRECTIONS",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "east"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "west"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "south"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "north"
                             }
                         }
                     ]
