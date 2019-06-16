@@ -24,7 +24,7 @@ class Maze:
         r2.north = r4.id
         r2.east = r3.id
         r2.room_type = 'ATTUP'
-        r3.east = r2.id
+        r3.west = r2.id
         r3.north = r4.id
         r3.room_type = 'POISON'
         r4.west = r1.id

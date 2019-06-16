@@ -124,6 +124,13 @@
                     ]
                 },
                 {
+                    "name": "LocationIntent",
+                    "slots": [],
+                    "samples": [
+                        "where am i"
+                    ]
+                },
+                {
                     "name": "MoveIntent",
                     "slots": [
                         {

@@ -88,11 +88,13 @@ def enter_maze_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     attr = handler_input.attributes_manager.persistent_attributes
     attr['game_state'] = 'INMAZE'
-    attr['maze'] = Maze().to_dict()
+    maze = Maze()
+    attr['maze'] = maze.to_dict()
 
     attr['temp_buff'] = TempCharacter().to_dict()
 
-    speech_text = "You entered the maze. Now pick up a direction and move."
+    speech_text = "You entered the maze. You are currently in room-{}. Now pick up a direction and move.".format(
+        maze.cur_room.id)
 
     # logger.info(json.dumps(attr['maze']['cur_room']))
     # logger.info(json.dumps(attr['maze']['rooms']))
@@ -101,6 +103,27 @@ def enter_maze_intent_handler(handler_input):
     handler_input.attributes_manager.save_persistent_attributes()
     handler_input.response_builder.speak(
         speech_text).set_should_end_session(False)
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("LocationIntent"))
+def location_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    attr = handler_input.attributes_manager.persistent_attributes
+    maze = Maze(maze_data=attr['maze'])
+    cur_id = maze.cur_room.id
+    speech_text = "You are now in room-{}. ".format(cur_id)
+    reprompt = 'You have visited every adjacent room. Now pick up a direction.'
+    for dir in random.shuffle(['north', 'south', 'west', 'east']):
+        if not maze.rooms[getattr(maze.cur_room, dir)].is_marked:
+            # not visited room
+            reprompt = 'You haven\'t visited the room in the ' + dir
+            break
+
+    speech_text += reprompt
+
+    handler_input.response_builder.speak(
+        speech_text).ask(reprompt)
     return handler_input.response_builder.response
 
 
@@ -128,7 +151,8 @@ def move_intent_handler(handler_input):
             speech_text = 'You should fight a boss here.'
             pass
         else:
-            speech_text = temp_buff.process(room_type, cur_char)
+            speech_text = 'You entered room-{}. '.format(new_room.id)
+            speech_text += temp_buff.process(room_type, cur_char)
             attr['temp_buff'] = temp_buff.to_dict()
 
         new_room.mark()
