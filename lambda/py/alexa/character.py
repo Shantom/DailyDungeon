@@ -1,4 +1,5 @@
 import time
+import copy
 from . import data
 from .battle import Battle
 from .mob import Mob
@@ -36,22 +37,25 @@ class Character:
             self.hp += 36
             self.mp += 16
 
-    def gain_exp_by_time(self):
-        cur_time = int(time.time())
-        passing_time = cur_time - self.last_offline_time
-        self.exp += (passing_time // self.sec_per_round) * \
+    def gain_exp_by_time(self, passing_time):
+        loot = (passing_time // self.sec_per_round) * \
             data.EXP_PER_ROUND[int(self.floor)]
+        self.exp += loot
+        return loot
 
-    def gain_coin_by_time(self):
-        cur_time = int(time.time())
-        passing_time = cur_time - self.last_offline_time
-        self.coin += (passing_time // self.sec_per_round) * data.COIN_PER_ROUND
+    def gain_coin_by_time(self, passing_time):
+        loot = (passing_time // self.sec_per_round) * data.COIN_PER_ROUND
+        self.coin += loot
+        return loot
 
     def claim_loot(self):
-        self.gain_coin_by_time()
-        self.gain_exp_by_time()
+        cur_time = int(time.time())
+        passing_time = cur_time - self.last_offline_time
+        loot_coin = self.gain_coin_by_time(passing_time)
+        loot_exp = self.gain_exp_by_time(passing_time)
         self.check_level_up()
         self.last_offline_time = int(time.time())
+        return passing_time, loot_coin, loot_exp
 
     def to_dict(self):
         ret = dict()
@@ -88,9 +92,18 @@ class Character:
         self.last_offline_time = int(char_data['last_offline_time'])
         self.sec_per_round = int(char_data['sec_per_round'])
 
-    def battle_with_boss(self):
-        # TODO: a battle here
-        bat = Battle(self, Mob(data.BOSS_OF_FLOOR[self.floor-1]))
+    def battle_with_boss(self, temp_buff):
+        # use a temp char to do the battle
+        temp_char = temp_buff
+        temp_char.attack += self.attack
+        temp_char.defense += self.defense
+        temp_char.hp += self.hp
+        temp_char.mp += self.mp
+        temp_char.speed += self.speed
+        temp_char.cast_speed += self.cast_speed
+        temp_char.cur_skill_set = self.cur_skill_set
+
+        bat = Battle(temp_char, Mob(data.BOSS_OF_FLOOR[self.floor-1]))
         is_win = bat.fight()
         log_battle = bat.log_info
         if is_win:
@@ -110,6 +123,8 @@ class TempCharacter:
             self.cur_skill_set = []
             self.speed = 0
             self.cast_speed = 0
+            self.attack_gauge = 100
+            self.cast_gauge = 100
         else:
             self.from_dict(char_data)
 
@@ -132,6 +147,8 @@ class TempCharacter:
         self.cur_skill_set = char_data['cur_skill_set']
         self.speed = int(char_data['speed'])
         self.cast_speed = int(char_data['cast_speed'])
+        self.attack_gauge = 100
+        self.cast_gauge = 100
 
     def process(self, room_type, cur_char):
         if room_type == 'ATTUP':

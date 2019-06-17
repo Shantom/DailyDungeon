@@ -28,21 +28,6 @@
                     "samples": []
                 },
                 {
-                    "name": "NumberGuessIntent",
-                    "slots": [
-                        {
-                            "name": "number",
-                            "type": "AMAZON.NUMBER"
-                        }
-                    ],
-                    "samples": [
-                        "{number}",
-                        "is it {number}",
-                        "how about {number}",
-                        "could be {number}"
-                    ]
-                },
-                {
                     "name": "BossInfoIntent",
                     "slots": [
                         {
@@ -99,12 +84,10 @@
                     ]
                 },
                 {
-                    "name": "ChallengeFloorIntent",
+                    "name": "ChallengeBossIntent",
                     "slots": [],
                     "samples": [
                         "challenge the boss",
-                        "challenge the floor",
-                        "I want to challenge the floor",
                         "I want to challenge the boss"
                     ]
                 },
@@ -121,6 +104,20 @@
                     "slots": [],
                     "samples": [
                         "enter the maze"
+                    ]
+                },
+                {
+                    "name": "ResumeMazeIntent",
+                    "slots": [],
+                    "samples": [
+                        "resume the maze"
+                    ]
+                },
+                {
+                    "name": "DiscardMazeIntent",
+                    "slots": [],
+                    "samples": [
+                        "discard the maze"
                     ]
                 },
                 {

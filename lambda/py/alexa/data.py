@@ -56,14 +56,14 @@ MOB_INFO = {
     'Awakened Shrub': {
         'attack': 20,
         'defense': 0,
-        'hp': 300,
+        'hp': 200,
         'mp': 0,
         'skills': [],
         'speed': 100,
         'cast_speed': 100
     },
     'Awakened Shrub two': {
-        'attack': 20,
+        'attack': 2000,
         'defense': 0,
         'hp': 3000,
         'mp': 0,

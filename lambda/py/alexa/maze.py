@@ -14,7 +14,7 @@ class Maze:
     def simple_maze(self):
         r0, r1, r2, r3, r4, r5 = Room(), Room(), Room(), Room(), Room(), Room()
         r0.id, r1.id, r2.id, r3.id, r4.id, r5.id = (
-            '0', '1', '2', '3', '4', '5')
+            '0', '1', '2', '3', '4', 'boss')
         r0.north = r2.id
         r1.north = r4.id
         r1.east = r2.id

@@ -7,6 +7,7 @@ from html.parser import HTMLParser
 import random
 import logging
 import time
+import datetime
 import uuid
 import json
 from collections import defaultdict
@@ -39,41 +40,55 @@ def launch_request_handler(handler_input):
     """
     attr = handler_input.attributes_manager.persistent_attributes
     session_attr = tree()
+    speech_text = ''
 
     if not attr:
         # create a new one
-        session_attr['game_state'] = "WAIT_FOR_CREATION"
-
         attr['character'] = Character().to_dict()
         handler_input.attributes_manager.persistent_attributes = attr
 
-        speech_text = (
+        speech_text += (
             "Welcome to Daily Dungeon. "
-            "Seems you don't have a character here, so I just created one for you")
+            "Seems you don't have a character here, so I just created one for you. ")
 
         card = SimpleCard(
             title='Welcome to Daily Dungeon', content='Character created successfully.')
 
     else:
-        # load the one and claim trophy
+        # load the char and claim trophy
 
         attr = handler_input.attributes_manager.persistent_attributes
         cur_char = Character(attr['character'])
-        cur_char.claim_loot()
+        passing_time, loot_coin, loot_exp = cur_char.claim_loot()
+        speech_text = 'Welcome to Daily Dungeon. '
+        day = passing_time // (24 * 3600)
+        hour = (passing_time % (24 * 3600)) // 3600
+        minute = (passing_time % 3600) // 60
+        if day > 1:
+            speech_time = '{} days and {} hours'.format(day, hour)
+        elif day == 1:
+            speech_time = 'one day and {} hours'.format(hour)
+        elif hour > 1:
+            speech_time = '{} hours and {} minutes'.format(hour, minute)
+        elif hour == 1:
+            speech_time = 'one hour and {} minutes'.format(minute)
+        else:
+            speech_time = '{} minutes'.format(minute)
+
+        speech_text += 'It\'s been ' + speech_time+' since your last login. '
 
         attr['character'] = cur_char.to_dict()
 
-        speech_text = (
-            "Welcome to Daily Dungeon. "
-            "Logging into your character of level-{} and Dungeon of floor-{}. "
-            "I have claimed the trophy for you."
-            .format(cur_char.level, cur_char.floor)
-        )
-
         card = SimpleCard(
             title='Welcome to Daily Dungeon',
-            content='Your Character\'s Status: \n\tLevel-{}\n\tFloor-{}'
-            .format(cur_char.level, cur_char.floor))
+            content='Offline time: ' + str(datetime.timedelta(seconds=passing_time)) +
+            '\n Coin obtained: {}'.format(loot_coin) +
+            '\n Exp obtained:{}'.format(loot_exp)
+        )
+
+    if 'in_maze' in attr and (attr['in_maze'] == 'IN' or attr['in_maze'] == 'WAIT'):
+        speech_text += 'You didnt finish your maze. Say resume the maze to go back to where you were. '
+        attr['in_maze'] = 'WAIT'
 
     handler_input.attributes_manager.save_persistent_attributes()
 
@@ -83,11 +98,13 @@ def launch_request_handler(handler_input):
     return handler_input.response_builder.response
 
 
-@sb.request_handler(can_handle_func=is_intent_name("EnterMazeIntent"))
+@sb.request_handler(can_handle_func=lambda input:
+                    is_intent_name("EnterMazeIntent")(input)
+                    and is_in_maze(input) == 'NO')
 def enter_maze_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     attr = handler_input.attributes_manager.persistent_attributes
-    attr['game_state'] = 'INMAZE'
+    attr['in_maze'] = 'IN'
     maze = Maze()
     attr['maze'] = maze.to_dict()
 
@@ -96,9 +113,21 @@ def enter_maze_intent_handler(handler_input):
     speech_text = "You entered the maze. You are currently in room-{}. Now pick up a direction and move.".format(
         maze.cur_room.id)
 
-    # logger.info(json.dumps(attr['maze']['cur_room']))
-    # logger.info(json.dumps(attr['maze']['rooms']))
-    # logger.info(json.dumps(attr['temp_buff']))
+    handler_input.attributes_manager.save_persistent_attributes()
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=lambda input:
+                    is_intent_name("ResumeMazeIntent")(input)
+                    and is_in_maze(input) == 'WAIT')
+def resume_maze_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    attr = handler_input.attributes_manager.persistent_attributes
+    attr['in_maze'] = 'IN'
+
+    speech_text = 'You returned to the maze. Say where am i to locate yourself. '
 
     handler_input.attributes_manager.save_persistent_attributes()
     handler_input.response_builder.speak(
@@ -106,16 +135,32 @@ def enter_maze_intent_handler(handler_input):
     return handler_input.response_builder.response
 
 
-@sb.request_handler(can_handle_func=is_intent_name("LocationIntent"))
+@sb.request_handler(can_handle_func=is_intent_name("DiscardMazeIntent"))
+def discard_maze_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    attr = handler_input.attributes_manager.persistent_attributes
+    attr['in_maze'] = 'NO'
+
+    speech_text = 'The maze has been discarded. '
+
+    handler_input.attributes_manager.save_persistent_attributes()
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=lambda input:
+                    is_intent_name("LocationIntent")(input)
+                    and is_in_maze(input) == 'IN')
 def location_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     attr = handler_input.attributes_manager.persistent_attributes
     maze = Maze(maze_data=attr['maze'])
     cur_id = maze.cur_room.id
     speech_text = "You are now in room-{}. ".format(cur_id)
-    reprompt = 'You have visited every adjacent room. Now pick up a direction.'
-    for dir in random.shuffle(['north', 'south', 'west', 'east']):
-        if not maze.rooms[getattr(maze.cur_room, dir)].is_marked:
+    reprompt = 'You have visited every adjacent room. Now pick up a direction. '
+    for dir in random.sample(['north', 'south', 'west', 'east'], 4):
+        if getattr(maze.cur_room, dir) and not maze.rooms[getattr(maze.cur_room, dir)].is_marked:
             # not visited room
             reprompt = 'You haven\'t visited the room in the ' + dir
             break
@@ -127,7 +172,9 @@ def location_intent_handler(handler_input):
     return handler_input.response_builder.response
 
 
-@sb.request_handler(can_handle_func=is_intent_name("MoveIntent"))
+@sb.request_handler(can_handle_func=lambda input:
+                    is_intent_name("MoveIntent")(input)
+                    and is_in_maze(input) == 'IN')
 def move_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     direction = handler_input.request_envelope.request.intent.slots['direction'].value
@@ -148,14 +195,17 @@ def move_intent_handler(handler_input):
         temp_buff = TempCharacter(attr['temp_buff'])
         if room_type == 'BOSS':
             # TODO: fight a boss
-            speech_text = 'You should fight a boss here.'
+            speech_text = 'You finally found the boss room. Say challenge the boss.'
+            attr['ready_for_boss'] = True
+
             pass
         else:
             speech_text = 'You entered room-{}. '.format(new_room.id)
             speech_text += temp_buff.process(room_type, cur_char)
             attr['temp_buff'] = temp_buff.to_dict()
+            attr['ready_for_boss'] = False
+            new_room.mark()
 
-        new_room.mark()
         maze.cur_room = new_room
 
     attr['maze'] = maze.to_dict()
@@ -165,22 +215,28 @@ def move_intent_handler(handler_input):
     return handler_input.response_builder.response
 
 
-@sb.request_handler(can_handle_func=is_intent_name("ChallengeFloorIntent"))
-def challenge_floor_intent_handler(handler_input):
+@sb.request_handler(can_handle_func=lambda input:
+                    is_intent_name("ChallengeBossIntent")(input)
+                    and is_in_maze(input) == 'IN'
+                    and ready_for_boss(input))
+def challenge_boss_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
 
     attr = handler_input.attributes_manager.persistent_attributes
     session_attr = handler_input.attributes_manager.session_attributes
-    cur_char = Character(attr['character'])
 
-    is_win, log_battle = cur_char.battle_with_boss()
+    cur_char = Character(attr['character'])
+    temp_buff = TempCharacter(attr['temp_buff'])
+    is_win, log_battle = cur_char.battle_with_boss(temp_buff)
     session_attr['last_battle_log'] = log_battle
 
     if is_win:
         speech_text = "You passed the challenge, welcome to floor-{}".format(
             cur_char.floor)
+        attr['in_maze'] = 'NO'
+        attr['ready_for_boss'] = False
     else:
-        speech_text = 'Sorry but you did not pass the boss. Say review last battle to prepare next try'
+        speech_text = 'Sorry but you failed to beat the boss. Say review last battle to prepare next try'
 
     attr['character'] = cur_char.to_dict()
     handler_input.attributes_manager.save_persistent_attributes()
@@ -298,22 +354,40 @@ def session_ended_request_handler(handler_input):
     return handler_input.response_builder.response
 
 
-def currently_in_maze(handler_input):
+def is_in_maze(handler_input):
+    # type: (HandlerInput) -> bool
+    """Function that checks if in maze."""
+    attr = handler_input.attributes_manager.persistent_attributes
+    in_maze = 'NO'
+    if 'in_maze' in attr:
+        in_maze = attr['in_maze']
+
+    return in_maze
+
+
+def ready_for_boss(handler_input):
+    # type: (HandlerInput) -> bool
+    """Function that checks if in maze."""
+    attr = handler_input.attributes_manager.persistent_attributes
+    ready = False
+    if 'ready_for_boss' in attr:
+        ready = attr['ready_for_boss']
+
+    return ready
+
+
+def game_state(handler_input):
     # type: (HandlerInput) -> bool
     """Function that acts as can handle for game state."""
-    is_in_maze = False
-    session_attr = handler_input.attributes_manager.session_attributes
+    attr = handler_input.attributes_manager.persistent_attributes
+    state = None
+    if attr['game_state']:
+        state = attr['game_state']
 
-    if ("game_state" in session_attr
-            and session_attr['game_state'] == "INMAZE"):
-        is_in_maze = True
-
-    return is_in_maze
+    return state
 
 
-@sb.request_handler(can_handle_func=lambda input:
-                    not currently_in_maze(input) and
-                    is_intent_name("AMAZON.YesIntent")(input))
+@sb.request_handler(can_handle_func=is_intent_name("AMAZON.YesIntent"))
 def yes_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for Yes Intent, only if the player said yes for
@@ -327,9 +401,7 @@ def yes_handler(handler_input):
     return handler_input.response_builder.response
 
 
-@sb.request_handler(can_handle_func=lambda input:
-                    not currently_in_maze(input) and
-                    is_intent_name("AMAZON.NoIntent")(input))
+@sb.request_handler(can_handle_func=is_intent_name("AMAZON.NoIntent"))
 def no_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for No Intent, only if the player said no for
@@ -374,7 +446,7 @@ def fallback_handler(handler_input):
 def unhandled_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for all other unhandled requests."""
-    speech = "I'm not sure what you are saying"
+    speech = "I'm not sure what you are saying. You need to be in a maze to perform some actions. "
     handler_input.response_builder.speak(speech).ask(speech)
     return handler_input.response_builder.response
 
