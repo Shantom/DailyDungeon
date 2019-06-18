@@ -37,20 +37,13 @@
                     ],
                     "samples": [
                         "tell me about {bossname}",
+                        "tell me about the boss",
                         "tell me about the boss on this floor"
                     ]
                 },
                 {
                     "name": "AMAZON.NavigateHomeIntent",
                     "samples": []
-                },
-                {
-                    "name": "NextLevelIntent",
-                    "slots": [],
-                    "samples": [
-                        "go to the next level",
-                        "head to the next level"
-                    ]
                 },
                 {
                     "name": "CheckSkillsIntent",
@@ -88,14 +81,14 @@
                     "slots": [],
                     "samples": [
                         "challenge the boss",
-                        "I want to challenge the boss"
+                        "fight the boss"
                     ]
                 },
                 {
                     "name": "BattleLogIntent",
                     "slots": [],
                     "samples": [
-                        "I want to check my last battle",
+                        "check my last battle",
                         "review last battle"
                     ]
                 },
@@ -103,28 +96,33 @@
                     "name": "EnterMazeIntent",
                     "slots": [],
                     "samples": [
-                        "enter the maze"
+                        "enter the maze",
+                        "enter it"
                     ]
                 },
                 {
                     "name": "ResumeMazeIntent",
                     "slots": [],
                     "samples": [
-                        "resume the maze"
+                        "resume the maze",
+                        "resume it"
                     ]
                 },
                 {
                     "name": "DiscardMazeIntent",
                     "slots": [],
                     "samples": [
-                        "discard the maze"
+                        "discard the maze",
+                        "discard it"
                     ]
                 },
                 {
                     "name": "LocationIntent",
                     "slots": [],
                     "samples": [
-                        "where am i"
+                        "where am i",
+                        "locate myself",
+                        "what is around me"
                     ]
                 },
                 {
@@ -136,7 +134,9 @@
                         }
                     ],
                     "samples": [
-                        "go {direction}"
+                        "go {direction}",
+                        "head {direction}",
+                        "move to the {direction}"
                     ]
                 }
             ],

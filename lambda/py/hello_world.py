@@ -39,7 +39,6 @@ def launch_request_handler(handler_input):
     """Handler for Skill Launch.
     """
     attr = handler_input.attributes_manager.persistent_attributes
-    session_attr = tree()
     speech_text = ''
 
     if not attr:
@@ -135,7 +134,9 @@ def resume_maze_intent_handler(handler_input):
     return handler_input.response_builder.response
 
 
-@sb.request_handler(can_handle_func=is_intent_name("DiscardMazeIntent"))
+@sb.request_handler(can_handle_func=lambda input:
+                    is_intent_name("DiscardMazeIntent")(input)
+                    and is_in_maze(input) != 'NO')
 def discard_maze_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     attr = handler_input.attributes_manager.persistent_attributes
@@ -399,8 +400,22 @@ def fallback_handler(handler_input):
 def unhandled_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     """Handler for all other unhandled requests."""
-    speech = "I'm not sure what you are saying. You need to be in a maze to perform some actions. "
-    handler_input.response_builder.speak(speech).ask(speech)
+    intent_name = get_intent_name(handler_input)
+    if intent_name == 'ChallengeBossIntent':
+        speech_text = 'You need to be in the boss room to challenge the boss. '
+    elif intent_name == 'EnterMazeIntent':
+        speech_text = 'You already have a maze in progress. Would you like to resume the maze or discard the maze? '
+    elif intent_name == 'ResumeMazeIntent' or intent_name == 'DiscardMazeIntent':
+        speech_text = 'You are already in a maze or you don\'t have a maze in progress. Say enter the maze or discard the maze. '
+    elif intent_name == 'LocationIntent':
+        speech_text = 'You need to be in a maze to locate yourself. Say enter the maze or resume the maze. '
+    elif intent_name == 'MoveIntent':
+        speech_text = 'You need to be in a maze to take a move. Say enter the maze or resume the maze. '
+    else:
+        speech_text = 'I am not sure what you are saying. '
+
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
     return handler_input.response_builder.response
 
 
