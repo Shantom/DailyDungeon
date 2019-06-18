@@ -376,17 +376,6 @@ def ready_for_boss(handler_input):
     return ready
 
 
-def game_state(handler_input):
-    # type: (HandlerInput) -> bool
-    """Function that acts as can handle for game state."""
-    attr = handler_input.attributes_manager.persistent_attributes
-    state = None
-    if attr['game_state']:
-        state = attr['game_state']
-
-    return state
-
-
 @sb.request_handler(can_handle_func=is_intent_name("AMAZON.YesIntent"))
 def yes_handler(handler_input):
     # type: (HandlerInput) -> Response
@@ -427,15 +416,8 @@ def fallback_handler(handler_input):
     """
     session_attr = handler_input.attributes_manager.session_attributes
 
-    if ("game_state" in session_attr and
-            session_attr["game_state"] == "STARTED"):
-        speech_text = (
-            "The {} skill can't help you with that.".format(SKILL_NAME))
-        # reprompt = "Please guess a number between 0 and 100."
-    else:
-        speech_text = (
-            "The {} skill can't help you with that.".format(SKILL_NAME))
-        # reprompt = "Say yes to start the game or no to quit."
+    speech_text = (
+        "The {} skill can't help you with that.".format(SKILL_NAME))
 
     handler_input.response_builder.speak(
         speech_text).set_should_end_session(False)
