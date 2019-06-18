@@ -375,34 +375,6 @@ def ready_for_boss(handler_input):
     return ready
 
 
-@sb.request_handler(can_handle_func=is_intent_name("AMAZON.YesIntent"))
-def yes_handler(handler_input):
-    # type: (HandlerInput) -> Response
-    """Handler for Yes Intent, only if the player said yes for
-    a new game.
-    """
-    # TODO: this is when users say yes
-    speech_text = "You said yes."
-    reprompt = "You just said yes."
-
-    handler_input.response_builder.speak(speech_text).ask(reprompt)
-    return handler_input.response_builder.response
-
-
-@sb.request_handler(can_handle_func=is_intent_name("AMAZON.NoIntent"))
-def no_handler(handler_input):
-    # type: (HandlerInput) -> Response
-    """Handler for No Intent, only if the player said no for
-    a new game.
-    """
-    # TODO: this is when users say yes
-    speech_text = "You said no."
-    reprompt = "You just said no."
-
-    handler_input.response_builder.speak(speech_text).ask(reprompt)
-    return handler_input.response_builder.response
-
-
 @sb.request_handler(can_handle_func=lambda input:
                     is_intent_name("AMAZON.FallbackIntent")(input) or
                     is_intent_name("AMAZON.YesIntent")(input) or
