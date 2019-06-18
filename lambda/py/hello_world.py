@@ -13,7 +13,7 @@ import json
 from collections import defaultdict
 
 from ask_sdk.standard import StandardSkillBuilder
-from ask_sdk_core.utils import is_request_type, is_intent_name
+from ask_sdk_core.utils import is_request_type, is_intent_name, get_intent_name, get_slot_value
 from ask_sdk_core.handler_input import HandlerInput
 from ask_sdk_model.ui import SimpleCard
 
@@ -177,7 +177,7 @@ def location_intent_handler(handler_input):
                     and is_in_maze(input) == 'IN')
 def move_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
-    direction = handler_input.request_envelope.request.intent.slots['direction'].value
+    direction = get_slot_value(handler_input, 'direction')
     if direction not in ['north', 'south', 'west', 'east']:
         handler_input.response_builder.speak(
             'please say a direction').set_should_end_session(False)
@@ -269,19 +269,18 @@ def battle_log_intent_handler(handler_input):
 @sb.request_handler(can_handle_func=is_intent_name("BossInfoIntent"))
 def boss_info_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
-    if not hasattr(handler_input.request_envelope.request.intent.slots, 'bossname'):
+    query = get_slot_value(handler_input, 'bossname')
+    if not query:
         attr = handler_input.attributes_manager.persistent_attributes
         cur_char = Character(attr['character'])
         query = data.BOSS_OF_FLOOR[cur_char.floor - 1]
-    else:
-        query = handler_input.request_envelope.request.intent.slots.bossname.value
 
     logger.info('query:'+query)
 
     if query and query in data.MOB_INFO:
         info = data.MOB_INFO[query]
-        speech_text = 'Boss {}. It has attack of {}, defense of {}, and HP of {}'.format(
-            query, info['attack'], info['defense'], info['hp'])
+        speech_text = 'Boss {}. It has attack of {}, defense of {}, and HP of {}. '.format(
+            query.title(), info['attack'], info['defense'], info['hp'])
         if len(info['skills']) == 1:
             speech_text += 'Also, it can use {}'.format(info['skills'][0])
         elif len(info['skills']) > 1:

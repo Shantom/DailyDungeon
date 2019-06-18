@@ -44,7 +44,7 @@ BOSS_OF_FLOOR = [
 ]
 
 MOB_INFO = {
-    'Monster A': {
+    'monster a': {
         'attack': 20,
         'defense': 0,
         'hp': 100,
@@ -53,7 +53,7 @@ MOB_INFO = {
         'speed': 100,
         'cast_speed': 100
     },
-    'Awakened Shrub': {
+    'awakened shrub': {
         'attack': 20,
         'defense': 0,
         'hp': 200,
@@ -62,7 +62,7 @@ MOB_INFO = {
         'speed': 100,
         'cast_speed': 100
     },
-    'Awakened Shrub two': {
+    'awakened shrub two': {
         'attack': 2000,
         'defense': 0,
         'hp': 3000,
