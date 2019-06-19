@@ -17,7 +17,8 @@ class Character:
             self.defense = 10
             self.hp = 200
             self.mp = 100
-            self.cur_skill_set = ['Double Strafe']
+            self.cur_skill_set = ['Double Strafe',
+                                  'Blitz Beat', 'Arrow Shower']
             self.speed = 100
             self.cast_speed = 100
             self.last_offline_time = int(time.time())
@@ -160,6 +161,15 @@ class TempCharacter:
         elif room_type == 'POISON':
             self.hp -= int(cur_char.hp * .3)
             return 'You found a mysterious portion and drank it all. Your hp lost 30 percent. '
+        elif room_type == 'ATTDOWN':
+            self.attack -= int(cur_char.attack * .2)
+            return 'You fell into a small puddle and your weapon is damaged a bit. Your attack decreases by 20 percent. '
+        elif room_type == 'DEFUP':
+            self.defense += int(cur_char.defense * .2)
+            return 'You found a good shield, which makes your defense increase by 20 percent. '
+        elif room_type == 'DEFDOWN':
+            self.defense -= int(cur_char.defense * .2)
+            return 'You were attacked by a slime. Your armor saved your life but it was scratched. Your defense decreases by 20 percent. '
         elif room_type == 'VISITED':
             return 'You have been here. There is nothing left.'
         else:

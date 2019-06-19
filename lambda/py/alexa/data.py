@@ -39,20 +39,25 @@ EXP_PER_ROUND = [
 ]
 
 BOSS_OF_FLOOR = [
-    'Awakened Shrub',
-    'Awakened Shrub two'
+    'awakened shrub',
+    'minotaur',
+    'skeleton',
+    'skeleton',
+    'skeleton',  # 5
+    'skeleton',
+    'skeleton',
+    'skeleton',
+    'skeleton',
+    'skeleton',  # 10
+    'skeleton',
+    'skeleton',
+    'skeleton',
+    'skeleton',
+    'skeleton',  # 15
+    'skeleton',
 ]
 
 MOB_INFO = {
-    'monster a': {
-        'attack': 20,
-        'defense': 0,
-        'hp': 100,
-        'mp': 0,
-        'skills': [],
-        'speed': 100,
-        'cast_speed': 100
-    },
     'awakened shrub': {
         'attack': 20,
         'defense': 0,
@@ -62,22 +67,50 @@ MOB_INFO = {
         'speed': 100,
         'cast_speed': 100
     },
-    'awakened shrub two': {
-        'attack': 2000,
+    'minotaur': {
+        'attack': 50,
+        'defense': 0,
+        'hp': 400,
+        'mp': 100,
+        'skills': ['Thump'],
+        'speed': 100,
+        'cast_speed': 100
+    },
+    'skeleton': {
+        'attack': 200,
         'defense': 0,
         'hp': 3000,
         'mp': 0,
         'skills': ['Double Strafe'],
         'speed': 100,
         'cast_speed': 100
-    }
+    },
+
 }
 
 SKILL_INFO = {
     'Double Strafe': {
         'name': 'Double Strafe',
         'rate': 380,
-        'cast': 300,
+        'cast': 280,
         'mp': 20
+    },
+    'Blitz Beat': {
+        'name': 'Blitz Beat',
+        'rate': 190,
+        'cast': 150,
+        'mp': 10
+    },
+    'Arrow Shower': {
+        'name': 'Arrow Shower',
+        'rate': 710,
+        'cast': 500,
+        'mp': 40
+    },
+    'Thump': {
+        'name': 'Thump',
+        'rate': 190,
+        'cast': 300,
+        'mp': 30
     }
 }

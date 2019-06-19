@@ -104,7 +104,9 @@ def enter_maze_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     attr = handler_input.attributes_manager.persistent_attributes
     attr['in_maze'] = 'IN'
-    maze = Maze()
+    cur_char = Character(attr['character'])
+    floor = 0 if cur_char.floor == 3 else cur_char.floor
+    maze = Maze(floor=floor)
     attr['maze'] = maze.to_dict()
 
     attr['temp_buff'] = TempCharacter().to_dict()
@@ -126,7 +128,7 @@ def resume_maze_intent_handler(handler_input):
     attr = handler_input.attributes_manager.persistent_attributes
     attr['in_maze'] = 'IN'
 
-    speech_text = 'You returned to the maze. Say where am i to locate yourself. '
+    speech_text = 'You returned to the maze. Say where am I to locate yourself. '
 
     handler_input.attributes_manager.save_persistent_attributes()
     handler_input.response_builder.speak(
@@ -196,7 +198,7 @@ def move_intent_handler(handler_input):
         temp_buff = TempCharacter(attr['temp_buff'])
         if room_type == 'BOSS':
             # TODO: fight a boss
-            speech_text = 'You finally found the boss room. Say challenge the boss.'
+            speech_text = 'You finally found the boss room. You can challenge the boss here.'
             attr['ready_for_boss'] = True
 
             pass
@@ -305,11 +307,26 @@ def check_status_intent_handler(handler_input):
     speech_text += 'He has attack of {} and defense of {}. '.format(
         cur_char.attack, cur_char.defense)
 
-    card = SimpleCard(title='Chracter Status', content='\tLevel:{}\tFloor:{}\n\tJob:{}\n\tHP:{}\tMP:{}\n\tAttack:{}\tDefense:{}'.format(
+    card = SimpleCard(title='Character Status', content='\tLevel:{}\tFloor:{}\n\tJob:{}\n\tHP:{}\tMP:{}\n\tAttack:{}\tDefense:{}'.format(
         cur_char.level, cur_char.floor, cur_char.job, cur_char.hp, cur_char.mp, cur_char.attack, cur_char.defense))
 
     handler_input.response_builder.speak(
-        speech_text).set_card(card).set_should_end_session(False)
+        speech_text).set_card(card)
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("CheckSkillsIntent"))
+def check_skill_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    attr = handler_input.attributes_manager.persistent_attributes
+    cur_char = Character(attr['character'])
+    speech_text = "Your current skill set includes {}".format(
+        ','.join(cur_char.cur_skill_set))
+    card = SimpleCard(title='Character Skills', content='Equipped:\n {} '.format(
+        '\n'.join(cur_char.cur_skill_set)))
+
+    handler_input.response_builder.speak(speech_text).set_card(
+        card).set_should_end_session(False)
     return handler_input.response_builder.response
 
 

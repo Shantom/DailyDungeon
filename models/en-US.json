@@ -32,7 +32,7 @@
                     "slots": [
                         {
                             "name": "bossname",
-                            "type": "AMAZON.SearchQuery"
+                            "type": "LIST_OF_BOSSES"
                         }
                     ],
                     "samples": [
@@ -49,9 +49,11 @@
                     "name": "CheckSkillsIntent",
                     "slots": [],
                     "samples": [
+                        "my skill",
                         "show me my skills",
-                        "i want to see my skills",
-                        "i want to check my skills"
+                        "see my skills",
+                        "check my skills",
+                        "check my abilities"
                     ]
                 },
                 {
@@ -187,6 +189,26 @@
                         {
                             "name": {
                                 "value": "north"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "LIST_OF_BOSSES",
+                    "values": [
+                        {
+                            "name": {
+                                "value": "awakened shrub two"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "awakened shrub"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "monster a"
                             }
                         }
                     ]
