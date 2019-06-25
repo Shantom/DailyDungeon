@@ -320,10 +320,11 @@ def check_skill_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
     attr = handler_input.attributes_manager.persistent_attributes
     cur_char = Character(attr['character'])
-    speech_text = "Your current skill set includes {}".format(
-        ','.join(cur_char.cur_skill_set))
-    card = SimpleCard(title='Character Skills', content='Equipped:\n {} '.format(
-        '\n'.join(cur_char.cur_skill_set)))
+    speech_text = 'You have {} equipped. '.format(
+        cur_char.cur_skill)+"Your current skill set includes {}. ".format(','.join(cur_char.skills))
+
+    card = SimpleCard(title='Character Skills', content='Equipped: {} '.format(
+        cur_char.cur_skill)+'List:\n {}\n'.format('\n'.join(cur_char.skills)))
 
     handler_input.response_builder.speak(speech_text).set_card(
         card).set_should_end_session(False)

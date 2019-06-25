@@ -17,8 +17,9 @@ class Character:
             self.defense = 10
             self.hp = 200
             self.mp = 100
-            self.cur_skill_set = ['Double Strafe',
-                                  'Blitz Beat', 'Arrow Shower']
+            self.cur_skill = 'Thump'
+            self.skills = ['Double Strafe',
+                           'Blitz Beat', 'Arrow Shower', 'Thump']
             self.speed = 100
             self.cast_speed = 100
             self.last_offline_time = int(time.time())
@@ -69,7 +70,8 @@ class Character:
         ret['defense'] = self.defense
         ret['hp'] = self.hp
         ret['mp'] = self.mp
-        ret['cur_skill_set'] = self.cur_skill_set
+        ret['cur_skill'] = self.cur_skill
+        ret['skills'] = self.skills
         ret['speed'] = self.speed
         ret['cast_speed'] = self.cast_speed
         ret['last_offline_time'] = self.last_offline_time
@@ -87,7 +89,8 @@ class Character:
         self.defense = int(char_data['defense'])
         self.hp = int(char_data['hp'])
         self.mp = int(char_data['mp'])
-        self.cur_skill_set = char_data['cur_skill_set']
+        self.cur_skill = char_data['cur_skill']
+        self.skills = char_data['skills']
         self.speed = int(char_data['speed'])
         self.cast_speed = int(char_data['cast_speed'])
         self.last_offline_time = int(char_data['last_offline_time'])
@@ -102,7 +105,7 @@ class Character:
         temp_char.mp += self.mp
         temp_char.speed += self.speed
         temp_char.cast_speed += self.cast_speed
-        temp_char.cur_skill_set = self.cur_skill_set
+        temp_char.cur_skill = self.cur_skill
 
         bat = Battle(temp_char, Mob(data.BOSS_OF_FLOOR[self.floor-1]))
         is_win = bat.fight()
@@ -121,7 +124,7 @@ class TempCharacter:
             self.defense = 0
             self.hp = 0
             self.mp = 0
-            self.cur_skill_set = []
+            self.cur_skill = None
             self.speed = 0
             self.cast_speed = 0
             self.attack_gauge = 100
@@ -135,7 +138,7 @@ class TempCharacter:
         ret['defense'] = self.defense
         ret['hp'] = self.hp
         ret['mp'] = self.mp
-        ret['cur_skill_set'] = self.cur_skill_set
+        ret['cur_skill'] = self.cur_skill
         ret['speed'] = self.speed
         ret['cast_speed'] = self.cast_speed
         return ret
@@ -145,7 +148,7 @@ class TempCharacter:
         self.defense = int(char_data['defense'])
         self.hp = int(char_data['hp'])
         self.mp = int(char_data['mp'])
-        self.cur_skill_set = char_data['cur_skill_set']
+        self.cur_skill = char_data['cur_skill']
         self.speed = int(char_data['speed'])
         self.cast_speed = int(char_data['cast_speed'])
         self.attack_gauge = 100

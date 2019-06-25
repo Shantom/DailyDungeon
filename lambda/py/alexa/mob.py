@@ -15,6 +15,6 @@ class Mob:
         self.defense = mob_data['defense']
         self.hp = mob_data['hp']
         self.mp = mob_data['mp']
-        self.cur_skill_set = mob_data['skills']
+        self.cur_skill = mob_data['skill']
         self.speed = mob_data['speed']
         self.cast_speed = mob_data['cast_speed']

@@ -61,9 +61,9 @@ MOB_INFO = {
     'awakened shrub': {
         'attack': 20,
         'defense': 0,
-        'hp': 200,
+        'hp': 2000,
         'mp': 0,
-        'skills': [],
+        'skill': None,
         'speed': 100,
         'cast_speed': 100
     },
@@ -72,16 +72,16 @@ MOB_INFO = {
         'defense': 0,
         'hp': 400,
         'mp': 100,
-        'skills': ['Thump'],
+        'skill': 'Thump',
         'speed': 100,
-        'cast_speed': 100
+        'cast_speed': 50
     },
     'skeleton': {
         'attack': 200,
         'defense': 0,
         'hp': 3000,
         'mp': 0,
-        'skills': ['Double Strafe'],
+        'skill': 'Double Strafe',
         'speed': 100,
         'cast_speed': 100
     },
@@ -93,24 +93,42 @@ SKILL_INFO = {
         'name': 'Double Strafe',
         'rate': 380,
         'cast': 280,
-        'mp': 20
+        'mp': 20,
+        'effect': None
     },
     'Blitz Beat': {
         'name': 'Blitz Beat',
         'rate': 190,
         'cast': 150,
-        'mp': 10
+        'mp': 10,
+        'effect': None
     },
     'Arrow Shower': {
         'name': 'Arrow Shower',
         'rate': 710,
         'cast': 500,
-        'mp': 40
+        'mp': 40,
+        'effect': None
     },
     'Thump': {
         'name': 'Thump',
         'rate': 190,
-        'cast': 300,
-        'mp': 30
+        'cast': 150,
+        'mp': 30,
+        'effect': None
+    },
+    'Blade': {
+        'name': 'Blade',
+        'rate': 150,
+        'cast': 500,
+        'mp': 30,
+        'effect': 'Bleeding'
+    },
+    'Blizzard': {
+        'name': 'Blizzard',
+        'rate': 180,
+        'cast': 250,
+        'mp': 40,
+        'effect': 'Frozen'
     }
 }
