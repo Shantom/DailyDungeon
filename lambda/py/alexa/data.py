@@ -1,5 +1,5 @@
 EXP_TO_LEVEL_UP = [
-    300,  # 1
+    30,  # 1
     1000,
     2700,
     5000,
@@ -88,6 +88,18 @@ MOB_INFO = {
 
 }
 
+SKILL_ACQUIRE = [
+    None,
+    'Blade',
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+
+]
+
 SKILL_INFO = {
     'Double Strafe': {
         'name': 'Double Strafe',
@@ -127,7 +139,7 @@ SKILL_INFO = {
     'Blizzard': {
         'name': 'Blizzard',
         'rate': 180,
-        'cast': 250,
+        'cast': 400,
         'mp': 40,
         'effect': 'Frozen'
     }

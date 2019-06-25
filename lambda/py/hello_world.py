@@ -74,7 +74,10 @@ def launch_request_handler(handler_input):
         else:
             speech_time = '{} minutes'.format(minute)
 
-        speech_text += 'It\'s been ' + speech_time+' since your last login. '
+        speech_text += 'It\'s been ' + speech_time + ' since your last login. '
+
+        if cur_char.messages:
+            speech_text += 'You have unread messages. '
 
         attr['character'] = cur_char.to_dict()
 
@@ -94,6 +97,24 @@ def launch_request_handler(handler_input):
     handler_input.response_builder.speak(
         speech_text).ask('what would you like to do').set_card(card)
 
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("CheckMessagesIntent"))
+def check_messages_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    attr = handler_input.attributes_manager.persistent_attributes
+    cur_char = Character(attr['character'])
+    speech_text = ""
+    if not cur_char.messages:
+        speech_text += "You have no message."
+    else:
+        speech_text += cur_char.messages.pop(0)
+        speech_text += ' {} messages left. '.format(len(cur_char.messages))
+
+    handler_input.attributes_manager.save_persistent_attributes()
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
     return handler_input.response_builder.response
 
 

@@ -24,11 +24,15 @@ class Character:
             self.cast_speed = 100
             self.last_offline_time = int(time.time())
             self.sec_per_round = 20
+            self.messages = []
         else:
             self.from_dict(char_data)
 
         self.attack_gauge = 100
         self.cast_gauge = 1000
+
+    def new_msg(self, msg):
+        self.messages.append(msg)
 
     def check_level_up(self):
         while self.exp >= data.EXP_TO_LEVEL_UP[self.level]:
@@ -38,6 +42,9 @@ class Character:
             self.defense += 4
             self.hp += 36
             self.mp += 16
+            if data.SKILL_ACQUIRE[self.level]:
+                self.new_msg('You have acquired a new skill, {}. '.format(
+                    data.SKILL_ACQUIRE[self.level]))
 
     def gain_exp_by_time(self, passing_time):
         loot = (passing_time // self.sec_per_round) * \
@@ -76,6 +83,7 @@ class Character:
         ret['cast_speed'] = self.cast_speed
         ret['last_offline_time'] = self.last_offline_time
         ret['sec_per_round'] = self.sec_per_round
+        ret['messages'] = self.messages
 
         return ret
 
@@ -95,6 +103,7 @@ class Character:
         self.cast_speed = int(char_data['cast_speed'])
         self.last_offline_time = int(char_data['last_offline_time'])
         self.sec_per_round = int(char_data['sec_per_round'])
+        self.messages = char_data['messages']
 
     def battle_with_boss(self, temp_buff):
         # use a temp char to do the battle

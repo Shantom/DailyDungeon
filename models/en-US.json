@@ -46,6 +46,16 @@
                     "samples": []
                 },
                 {
+                    "name": "CheckMessagesIntent",
+                    "slots": [],
+                    "samples": [
+                        "read my message",
+                        "show me my message",
+                        "see my message",
+                        "check my message"
+                    ]
+                },
+                {
                     "name": "CheckSkillsIntent",
                     "slots": [],
                     "samples": [
