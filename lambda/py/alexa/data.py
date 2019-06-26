@@ -1,3 +1,18 @@
+PLAYER_AVATAR = 'https://www.pixilart.com/images/art/49e12618c6f9e29.png'
+MONSTER_AVATAR = {
+    '?': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'boarbow': 'https://www.pixilart.com/images/art/7a500637e457561.png',
+    'ratpier': 'https://www.pixilart.com/images/art/3502890adb853ee.png',
+    'broadbull': 'https://www.pixilart.com/images/art/c04bf692bb7c44b.png',
+    'black tortoise': 'https://www.pixilart.com/images/art/81970b006afbac3.png'
+}
+
+
+EMOJI_STATUS = {
+    'Bleeding': "<img src='https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/209/drop-of-blood_1fa78.png' width='20' height='20' />",
+    'Frozen': "<img src='https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/120/microsoft/209/freezing-face_1f976.png' width='20' height='20' />"
+}
+
 EXP_TO_LEVEL_UP = [
     30,  # 1
     1000,
@@ -39,35 +54,38 @@ EXP_PER_ROUND = [
 ]
 
 BOSS_OF_FLOOR = [
-    'awakened shrub',
-    'minotaur',
-    'skeleton',
-    'skeleton',
-    'skeleton',  # 5
-    'skeleton',
-    'skeleton',
-    'skeleton',
-    'skeleton',
-    'skeleton',  # 10
-    'skeleton',
-    'skeleton',
-    'skeleton',
-    'skeleton',
-    'skeleton',  # 15
-    'skeleton',
+    'boarbow',
+    'ratpier',
+    'broadbull',
+    'black tortoise',
+
+    'tigermortar',
+    'bunnyblast',
+    'drident',
+    'azure dragon',
+
+    'whiptail',
+    'thoroughblade',
+    'ramram',
+    'vermilion bird',
+
+    'hammerkong',
+    'kataroost',
+    'chakanine',
+    'white tiger'
 ]
 
 MOB_INFO = {
-    'awakened shrub': {
+    'boarbow': {
         'attack': 20,
         'defense': 0,
         'hp': 2000,
         'mp': 0,
-        'skill': None,
+        'skill': 'Thump',
         'speed': 100,
         'cast_speed': 100
     },
-    'minotaur': {
+    'ratpier': {
         'attack': 50,
         'defense': 0,
         'hp': 400,
@@ -76,7 +94,16 @@ MOB_INFO = {
         'speed': 100,
         'cast_speed': 50
     },
-    'skeleton': {
+    'broadbull': {
+        'attack': 200,
+        'defense': 0,
+        'hp': 3000,
+        'mp': 0,
+        'skill': 'Double Strafe',
+        'speed': 100,
+        'cast_speed': 100
+    },
+    'black tortoise': {
         'attack': 200,
         'defense': 0,
         'hp': 3000,
@@ -144,3 +171,339 @@ SKILL_INFO = {
         'effect': 'Frozen'
     }
 }
+
+MAZE_OF_FLOOR = [
+    None,
+    {  # 1
+        '0': {
+            'id': '0',
+            'north': '1',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '1': {
+            'id': '1',
+            'north': None,
+            'east': '2',
+            'south': '0',
+            'west': None,
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': None,
+            'east': '3',
+            'south': 'boss',
+            'west': '1',
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '2',
+            'room_type': None
+        },
+        'boss': {
+            'id': 'boss',
+            'north': '2',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 2
+        '0': {
+            'id': '0',
+            'north': '1',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '1': {
+            'id': '1',
+            'north': None,
+            'east': '2',
+            'south': '0',
+            'west': None,
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': None,
+            'east': '3',
+            'south': 'boss',
+            'west': '1',
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '2',
+            'room_type': 'ATTUP'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': '2',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 3
+        '0': {
+            'id': '0',
+            'north': '1',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '1': {
+            'id': '1',
+            'north': None,
+            'east': '2',
+            'south': '0',
+            'west': None,
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': None,
+            'east': '3',
+            'south': '4',
+            'west': '1',
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': None,
+            'east': None,
+            'south': 'boss',
+            'west': '2',
+            'room_type': 'ATTDOWN'
+        },
+        '4': {
+            'id': '4',
+            'north': '2',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': '3',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 4
+        '0': {
+            'id': '0',
+            'north': '1',
+            'east': '3',
+            'south': None,
+            'west': '2',
+            'room_type': None
+        },
+        '1': {
+            'id': '1',
+            'north': None,
+            'east': None,
+            'south': '0',
+            'west': '2',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': '5',
+            'east': '1',
+            'south': '0',
+            'west': None,
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': '6',
+            'east': None,
+            'south': '0',
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        '4': {
+            'id': '4',
+            'north': 'boss',
+            'east': '6',
+            'south': None,
+            'west': '5',
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': None,
+            'east': '4',
+            'south': '2',
+            'west': None,
+            'room_type': 'HEAL'
+        },
+        '6': {
+            'id': '6',
+            'north': None,
+            'east': None,
+            'south': '3',
+            'west': '4',
+            'room_type': 'POISON'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': None,
+            'south': '4',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 5
+        '0': {
+            'id': '0',
+            'north': '1',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '1': {
+            'id': '1',
+            'north': '6',
+            'east': '3',
+            'south': '0',
+            'west': '2',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': 'boss',
+            'east': '1',
+            'south': None,
+            'west': None,
+            'room_type': 'HEAL'
+        },
+        '3': {
+            'id': '3',
+            'north': '5',
+            'east': None,
+            'south': '4',
+            'west': '1',
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': '3',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': None,
+            'east': None,
+            'south': '3',
+            'west': None,
+            'room_type': 'DEFUP'
+        },
+        '6': {
+            'id': '6',
+            'north': None,
+            'east': None,
+            'south': '1',
+            'west': None,
+            'room_type': None
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': None,
+            'south': '2',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 6
+        '0': {
+            'id': '0',
+            'north': '1',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '1': {
+            'id': '1',
+            'north': '6',
+            'east': '3',
+            'south': '0',
+            'west': '2',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': 'boss',
+            'east': '1',
+            'south': None,
+            'west': None,
+            'room_type': 'HEAL'
+        },
+        '3': {
+            'id': '3',
+            'north': '5',
+            'east': None,
+            'south': '4',
+            'west': '1',
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': '3',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': None,
+            'east': None,
+            'south': '3',
+            'west': None,
+            'room_type': 'DEFUP'
+        },
+        '6': {
+            'id': '6',
+            'north': None,
+            'east': None,
+            'south': '1',
+            'west': None,
+            'room_type': None
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': None,
+            'south': '2',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    }
+]

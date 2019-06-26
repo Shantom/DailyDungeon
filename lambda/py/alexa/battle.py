@@ -1,4 +1,8 @@
 from . import character, mob, data
+from ask_sdk_core.response_helper import get_plain_text_content, get_rich_text_content
+from ask_sdk_model.interfaces.display import (
+    ImageInstance, Image, RenderTemplateDirective, ListTemplate1,
+    BackButtonBehavior, ListItem)
 import copy
 
 
@@ -12,6 +16,8 @@ class Battle:
         self.tm = Timer('the monster')
 
         self.log_info = []
+        self.log_vec = []
+        self.seq = 0
 
     def tick(self):
         player_log = self.tp.tick()
@@ -37,6 +43,9 @@ class Battle:
                 self.log('You bleed {} when hitting the monster.'.format(
                     self.player_max_hp * .1))
 
+            self.log_move(True, self.player.hp, self.mob.hp, 'HIT',
+                          amount, self.tp.effects, self.tm.effects)
+
         else:
             self.tm.attack_gauge = 0
             amount = max(self.mob.attack - self.player.defense, 0)
@@ -52,6 +61,9 @@ class Battle:
                 self.mob.hp -= self.mob_max_hp * .1
                 self.log('The monster bleeds {} when hitting you.'.format(
                     self.mob_max_hp * .1))
+
+            self.log_move(False, self.player.hp, self.mob.hp, 'HIT',
+                          amount, self.tp.effects, self.tm.effects)
 
     def move(self, move, is_player=True):
         if is_player:
@@ -71,6 +83,8 @@ class Battle:
 
                 self.log('You use {}, which gives the monster {} damage, HP {} left'.format(
                     move['name'], damage, max(0, self.mob.hp)))
+                self.log_move(True, self.player.hp, self.mob.hp, move['name'],
+                              damage, self.tp.effects, self.tm.effects)
             else:
                 self.log(
                     'You don\'t have enough mana to cast {}'.format(move['name']))
@@ -90,6 +104,9 @@ class Battle:
             self.log('The monster use {}, which gives you {} damage, HP {} left'.format(
                 move['name'], damage, max(0, self.player.hp)))
 
+            self.log_move(False, self.player.hp, self.mob.hp, move['name'],
+                          damage, self.tp.effects, self.tm.effects)
+
     def check_death(self):
         if self.player.hp <= 0:
             return 'player'
@@ -100,6 +117,27 @@ class Battle:
 
     def log(self, info):
         self.log_info.append(info)
+
+    def log_move(self, is_player, p_hp, m_hp, move, dmg, p_st, m_st):
+        ret = ListItem(token=self.seq)
+        self.seq += 1
+        if is_player:
+            ret.image = Image(sources=[ImageInstance(url=data.PLAYER_AVATAR)])
+
+        else:
+            ret.image = Image(sources=[ImageInstance(url=data.MONSTER_AVATAR)])
+
+        p_st = [data.EMOJI_STATUS[x] for x in p_st]
+        m_st = [data.EMOJI_STATUS[x] for x in m_st]
+
+        primary_text = "<div align='center'><font size='5'>{} DMG: {}</font></div>".format(
+            move, str(dmg))
+        secondary_text =  "<div align='center'>Your HP:{} {}".format(p_hp, ''.join(
+            p_st)) + "Monster HP:{} {}</div>".format(m_hp, ''.join(m_st))
+
+        ret.text_content = get_rich_text_content(primary_text=primary_text,
+                                                 secondary_text=secondary_text)
+        self.log_vec.append(ret)
 
     def fight(self):
         while not self.check_death():

@@ -1,18 +1,24 @@
 import uuid
+from . import data
 
 
 class Maze:
     def __init__(self, maze_data=None, floor=None):
         if not maze_data:
-            mazes = [self.simple_maze, self.maze_1, self.maze_2]
-            if not floor:
-                floor = 0
-            mazes[floor]()
-        else:
-            self.rooms = {}
-            for room_id, room in maze_data['rooms'].items():
-                self.rooms[room_id] = Room(room_data=room)
-            self.cur_room = Room(room_data=maze_data['cur_room'])
+            # mazes = [self.simple_maze, self.maze_1, self.maze_2]
+            # if not floor:
+            #     floor = 0
+            # mazes[floor]()
+
+            maze_data = {
+                'rooms': data.MAZE_OF_FLOOR[floor],
+                'cur_room': data.MAZE_OF_FLOOR[floor]['0']
+            }
+
+        self.rooms = {}
+        for room_id, room in maze_data['rooms'].items():
+            self.rooms[room_id] = Room(room_data=room)
+        self.cur_room = Room(room_data=maze_data['cur_room'])
 
     def maze_1(self):
         r0, r1, r2, r3, r4, rb = Room(), Room(), Room(), Room(), Room(), Room()
@@ -126,4 +132,7 @@ class Room:
         self.west = room_data['west']
         self.east = room_data['east']
         self.room_type = room_data['room_type']
-        self.is_marked = room_data['is_marked']
+        if 'is_marked' in room_data:
+            self.is_marked = room_data['is_marked']
+        else:
+            self.is_marked = False

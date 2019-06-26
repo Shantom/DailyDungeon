@@ -18,8 +18,7 @@ class Character:
             self.hp = 200
             self.mp = 100
             self.cur_skill = 'Thump'
-            self.skills = ['Double Strafe',
-                           'Blitz Beat', 'Arrow Shower', 'Thump']
+            self.skills = ['Thump', 'Blizzard', 'Blade']
             self.speed = 100
             self.cast_speed = 100
             self.last_offline_time = int(time.time())
@@ -118,12 +117,11 @@ class Character:
 
         bat = Battle(temp_char, Mob(data.BOSS_OF_FLOOR[self.floor-1]))
         is_win = bat.fight()
-        log_battle = bat.log_info
         if is_win:
             self.floor += 1
-            return True, log_battle
+            return True, bat.log_info, bat.log_vec
         else:
-            return False, log_battle
+            return False, bat.log_info, bat.log_vec
 
 
 class TempCharacter:
@@ -183,6 +181,6 @@ class TempCharacter:
             self.defense -= int(cur_char.defense * .2)
             return 'You were attacked by a slime. Your armor saved your life but it was scratched. Your defense decreases by 20 percent. '
         elif room_type == 'VISITED':
-            return 'You have been here. There is nothing left.'
+            return ''
         else:
             return 'There is nothing in this room'

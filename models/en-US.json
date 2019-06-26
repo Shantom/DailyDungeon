@@ -20,6 +20,50 @@
                     "samples": []
                 },
                 {
+                    "name": "AMAZON.MoreIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateHomeIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NavigateSettingsIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.NextIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PageUpIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PageDownIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.PreviousIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollRightIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollDownIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollLeftIntent",
+                    "samples": []
+                },
+                {
+                    "name": "AMAZON.ScrollUpIntent",
+                    "samples": []
+                },
+                {
                     "name": "AMAZON.FallbackIntent",
                     "samples": []
                 },
@@ -40,10 +84,6 @@
                         "tell me about the boss",
                         "tell me about the boss on this floor"
                     ]
-                },
-                {
-                    "name": "AMAZON.NavigateHomeIntent",
-                    "samples": []
                 },
                 {
                     "name": "CheckMessagesIntent",
@@ -85,7 +125,7 @@
                         }
                     ],
                     "samples": [
-                        "change my skills to {skill} {skill}"
+                        "change my skills to {skill}"
                     ]
                 },
                 {
@@ -133,6 +173,7 @@
                     "slots": [],
                     "samples": [
                         "where am i",
+                        "locate",
                         "locate myself",
                         "what is around me"
                     ]
@@ -174,6 +215,21 @@
                         {
                             "name": {
                                 "value": "Arrow Repel"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Blade"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Blizzard"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "Arrow Repel 2"
                             }
                         }
                     ]

@@ -15,7 +15,11 @@ from collections import defaultdict
 from ask_sdk.standard import StandardSkillBuilder
 from ask_sdk_core.utils import is_request_type, is_intent_name, get_intent_name, get_slot_value
 from ask_sdk_core.handler_input import HandlerInput
-from ask_sdk_model.ui import SimpleCard
+from ask_sdk_core.response_helper import get_plain_text_content, get_rich_text_content
+from ask_sdk_model.interfaces.display import (
+    ImageInstance, Image, RenderTemplateDirective, ListTemplate1,
+    BackButtonBehavior, ListItem, BodyTemplate2)
+from ask_sdk_model import ui
 
 from ask_sdk_model import Response
 from alexa.character import Character, TempCharacter
@@ -50,7 +54,7 @@ def launch_request_handler(handler_input):
             "Welcome to Daily Dungeon. "
             "Seems you don't have a character here, so I just created one for you. ")
 
-        card = SimpleCard(
+        card = ui.SimpleCard(
             title='Welcome to Daily Dungeon', content='Character created successfully.')
 
     else:
@@ -81,7 +85,7 @@ def launch_request_handler(handler_input):
 
         attr['character'] = cur_char.to_dict()
 
-        card = SimpleCard(
+        card = ui.SimpleCard(
             title='Welcome to Daily Dungeon',
             content='Offline time: ' + str(datetime.timedelta(seconds=passing_time)) +
             '\n Coin obtained: {}'.format(loot_coin) +
@@ -251,8 +255,9 @@ def challenge_boss_intent_handler(handler_input):
 
     cur_char = Character(attr['character'])
     temp_buff = TempCharacter(attr['temp_buff'])
-    is_win, log_battle = cur_char.battle_with_boss(temp_buff)
+    is_win, log_battle, log_vec = cur_char.battle_with_boss(temp_buff)
     session_attr['last_battle_log'] = log_battle
+    session_attr['last_battle_log_vec'] = log_vec
 
     if is_win:
         speech_text = "You passed the challenge, welcome to floor-{}".format(
@@ -275,9 +280,18 @@ def battle_log_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
 
     session_attr = handler_input.attributes_manager.session_attributes
+    item_list = session_attr['last_battle_log_vec']
     if 'last_battle_log' in session_attr.keys():
         speech_text = '.\n'.join(session_attr['last_battle_log'])
         logger.info('Telling battle info.' + speech_text)
+
+        handler_input.response_builder.add_directive(
+            RenderTemplateDirective(
+                ListTemplate1(
+                    title='Battle Review',
+                    list_items=item_list
+                )))
+
     else:
         speech_text = 'Seems you don\'t have a battle.'
         logger.info('No battle info.')
@@ -305,11 +319,37 @@ def boss_info_intent_handler(handler_input):
         info = data.MOB_INFO[query]
         speech_text = 'Boss {}. It has attack of {}, defense of {}, and HP of {}. '.format(
             query.title(), info['attack'], info['defense'], info['hp'])
-        if len(info['skills']) == 1:
-            speech_text += 'Also, it can use {}'.format(info['skills'][0])
-        elif len(info['skills']) > 1:
-            speech_text += 'Also, it can use {} and {}'.format(
-                ', '.join(info['skills'][:-1]), info['skills'])
+        if len(info['skill']):
+            speech_text += 'Also, it can use {}'.format(info['skill'])
+
+        title = 'Boss Info: ' + query.title()
+        text = primary_text = 'HP: {}\n Attack: {}\n Defense: {}\n Agility: {}\n Dexterity: {}'.format(
+                info['hp'], info['attack'], info['defense'], info['speed'], info['cast_speed'])
+        if len(info['skill']):
+            primary_text += '\n Skill: {}'.format(info['skill'])
+        handler_input.response_builder.set_card(
+                    ui.StandardCard(
+                        title=title,
+                        text=text,
+                        image=ui.Image(
+                            small_image_url=data.MONSTER_AVATAR[query],
+                            large_image_url=data.MONSTER_AVATAR[query]
+                        )))
+
+        if supports_display(handler_input):
+            img = Image(sources=[ImageInstance(
+                url=data.MONSTER_AVATAR[query])])
+            primary_text = 'HP: {}<br/> Attack: {}<br/> Defense: {}<br/> Agility: {}<br/> Dexterity: {}'.format(
+                info['hp'], info['attack'], info['defense'], info['speed'], info['cast_speed'])
+            if len(info['skill']):
+                primary_text += '<br/> Skill: {}'.format(info['skill'])
+            primary_text = get_rich_text_content(primary_text)
+            handler_input.response_builder.add_directive(
+                RenderTemplateDirective(
+                    BodyTemplate2(
+                        back_button=BackButtonBehavior.VISIBLE,
+                        image=img, title=title,
+                        text_content=primary_text)))
     else:
         speech_text = "You can ask me the current floor's boss or any boss with a name "
 
@@ -328,11 +368,32 @@ def check_status_intent_handler(handler_input):
     speech_text += 'He has attack of {} and defense of {}. '.format(
         cur_char.attack, cur_char.defense)
 
-    card = SimpleCard(title='Character Status', content='\tLevel:{}\tFloor:{}\n\tJob:{}\n\tHP:{}\tMP:{}\n\tAttack:{}\tDefense:{}'.format(
+    card = ui.SimpleCard(title='Character Status', content='\tLevel:{}\tFloor:{}\n\tJob:{}\n\tHP:{}\tMP:{}\n\tAttack:{}\tDefense:{}'.format(
         cur_char.level, cur_char.floor, cur_char.job, cur_char.hp, cur_char.mp, cur_char.attack, cur_char.defense))
 
     handler_input.response_builder.speak(
         speech_text).set_card(card)
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("ChangeSkillsIntent"))
+def change_skill_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    attr = handler_input.attributes_manager.persistent_attributes
+    cur_char = Character(attr['character'])
+
+    skill = get_slot_value(handler_input, 'skill').title()
+
+    if skill not in cur_char.skills:
+        speech_text = "You don\'t have {} . ".format(skill)
+    else:
+        cur_char.cur_skill = skill
+        speech_text = 'Changed your skill to {}. '.format(skill)
+
+    handler_input.attributes_manager.save_persistent_attributes()
+
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
     return handler_input.response_builder.response
 
 
@@ -344,7 +405,7 @@ def check_skill_intent_handler(handler_input):
     speech_text = 'You have {} equipped. '.format(
         cur_char.cur_skill)+"Your current skill set includes {}. ".format(','.join(cur_char.skills))
 
-    card = SimpleCard(title='Character Skills', content='Equipped: {} '.format(
+    card = ui.SimpleCard(title='Character Skills', content='Equipped: {} '.format(
         cur_char.cur_skill)+'List:\n {}\n'.format('\n'.join(cur_char.skills)))
 
     handler_input.response_builder.speak(speech_text).set_card(
@@ -505,10 +566,24 @@ def add_card(handler_input, response):
     # type: (HandlerInput, Response) -> None
     if response.card:
         return
-    response.card = SimpleCard(
+    response.card = ui.SimpleCard(
         title='Daily Dungeon',
         content=convert_speech_to_text(response.output_speech.ssml)
     )
+
+
+def supports_display(handler_input):
+    # type: (HandlerInput) -> bool
+    """Check if display is supported by the skill."""
+    try:
+        if hasattr(
+            handler_input.request_envelope.context.system.device.
+                supported_interfaces, 'display'):
+            return (
+                handler_input.request_envelope.context.system.device.
+                supported_interfaces.display is not None)
+    except:
+        return False
 
 
 handler = sb.lambda_handler()

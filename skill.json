@@ -5,11 +5,9 @@
         "en-US": {
           "summary": "Sample Short Description",
           "examplePhrases": [
-            "Alexa open hello class world",
-            "hello",
-            "help"
+            "open daily dungeon"
           ],
-          "name": "Demo",
+          "name": "Daily Dungeon",
           "description": "Sample Full Description"
         }
       },
@@ -23,7 +21,15 @@
         "endpoint": {
           "sourceDir": "lambda/py/lambda_upload",
           "uri": "ask-custom-Demo-default"
-        }
+        },
+        "interfaces": [
+          {
+            "type": "ALEXA_PRESENTATION_APL"
+          },
+          {
+            "type": "RENDER_TEMPLATE"
+          }
+        ]
       }
     },
     "manifestVersion": "1.0"
