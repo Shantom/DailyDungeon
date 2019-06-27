@@ -323,23 +323,23 @@ def boss_info_intent_handler(handler_input):
             speech_text += 'Also, it can use {}'.format(info['skill'])
 
         title = 'Boss Info: ' + query.title()
-        text = primary_text = 'HP: {}\n Attack: {}\n Defense: {}\n Agility: {}\n Dexterity: {}'.format(
-                info['hp'], info['attack'], info['defense'], info['speed'], info['cast_speed'])
+        text = 'HP: {} Attack: {} Defense: {}\n Agility: {} Dexterity: {}'.format(
+            info['hp'], info['attack'], info['defense'], info['speed'], info['cast_speed'])
         if len(info['skill']):
-            primary_text += '\n Skill: {}'.format(info['skill'])
+            text += '\n Skill: {}'.format(info['skill'])
         handler_input.response_builder.set_card(
-                    ui.StandardCard(
-                        title=title,
-                        text=text,
-                        image=ui.Image(
-                            small_image_url=data.MONSTER_AVATAR[query],
-                            large_image_url=data.MONSTER_AVATAR[query]
-                        )))
+            ui.StandardCard(
+                title=title,
+                text=text,
+                image=ui.Image(
+                    small_image_url=data.MONSTER_AVATAR[query],
+                    large_image_url=data.MONSTER_AVATAR[query]
+                )))
 
         if supports_display(handler_input):
             img = Image(sources=[ImageInstance(
                 url=data.MONSTER_AVATAR[query])])
-            primary_text = 'HP: {}<br/> Attack: {}<br/> Defense: {}<br/> Agility: {}<br/> Dexterity: {}'.format(
+            primary_text = 'HP: {} Attack: {} Defense: {}<br/> Agility: {} Dexterity: {}'.format(
                 info['hp'], info['attack'], info['defense'], info['speed'], info['cast_speed'])
             if len(info['skill']):
                 primary_text += '<br/> Skill: {}'.format(info['skill'])
@@ -372,7 +372,7 @@ def check_status_intent_handler(handler_input):
         cur_char.level, cur_char.floor, cur_char.job, cur_char.hp, cur_char.mp, cur_char.attack, cur_char.defense))
 
     handler_input.response_builder.speak(
-        speech_text).set_card(card)
+        speech_text).set_card(card).set_should_end_session(False)
     return handler_input.response_builder.response
 
 
@@ -391,6 +391,45 @@ def change_skill_intent_handler(handler_input):
         speech_text = 'Changed your skill to {}. '.format(skill)
 
     handler_input.attributes_manager.save_persistent_attributes()
+
+    handler_input.response_builder.speak(
+        speech_text).set_should_end_session(False)
+    return handler_input.response_builder.response
+
+
+@sb.request_handler(can_handle_func=is_intent_name("SkillsInfoIntent"))
+def skill_info_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    query = get_slot_value(handler_input, 'skill')
+    if not query:
+        speech_text = "You can ask me a skill with a name. "
+
+    elif query.title() in data.SKILL_INFO:
+        info = data.SKILL_INFO[query.title()]
+        speech_text = '{} has damage rate of {}. It needs {} time units to cast, and costs {} MP. '.format(
+            query.title(), info['rate'], info['cast'], info['mp'])
+
+        title = 'Skill Info: ' + query.title()
+        text = 'Damage Rate: {}\n Cast Time: {}\n MP cost: {}'.format(
+            info['rate'], info['cast'], info['mp'])
+        if info['effect']:
+            speech_text += 'Also, it can make the enemy {}'.format(
+                info['effect'])
+            text += '\n Effect: {}'.format(info['effect'])
+
+        handler_input.response_builder.set_card(
+            ui.StandardCard(
+                title=title,
+                text=text,
+                image=ui.Image(
+                    small_image_url=data.MONSTER_AVATAR['?'],
+                    large_image_url=data.MONSTER_AVATAR['?']
+                )))
+
+    else:
+        speech_text = '{} is not a skill. '.format(query.title())
+
+    logger.info('query:'+query)
 
     handler_input.response_builder.speak(
         speech_text).set_should_end_session(False)

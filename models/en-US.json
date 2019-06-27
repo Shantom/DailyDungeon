@@ -121,11 +121,25 @@
                     "slots": [
                         {
                             "name": "skill",
-                            "type": "LIST_OF_SKILL"
+                            "type": "LIST_OF_SKILLS"
                         }
                     ],
                     "samples": [
-                        "change my skills to {skill}"
+                        "change my skill to {skill}",
+                        "set my skill to {skill}"
+                    ]
+                },
+                {
+                    "name": "SkillsInfoIntent",
+                    "slots": [
+                        {
+                            "name": "skill",
+                            "type": "LIST_OF_SKILLS"
+                        }
+                    ],
+                    "samples": [
+                        "tell me about {skill}",
+                        "what is {skill}"
                     ]
                 },
                 {
@@ -195,7 +209,7 @@
             ],
             "types": [
                 {
-                    "name": "LIST_OF_SKILL",
+                    "name": "LIST_OF_SKILLS",
                     "values": [
                         {
                             "name": {
@@ -229,7 +243,7 @@
                         },
                         {
                             "name": {
-                                "value": "Arrow Repel 2"
+                                "value": "Thump"
                             }
                         }
                     ]
