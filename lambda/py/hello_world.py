@@ -413,7 +413,7 @@ def skill_info_intent_handler(handler_input):
         text = 'Damage Rate: {}\n Cast Time: {}\n MP cost: {}'.format(
             info['rate'], info['cast'], info['mp'])
         if info['effect']:
-            speech_text += 'Also, it can make the enemy {}'.format(
+            speech_text += 'Also, it can make the enemy into {}'.format(
                 info['effect'])
             text += '\n Effect: {}'.format(info['effect'])
 
@@ -425,6 +425,21 @@ def skill_info_intent_handler(handler_input):
                     small_image_url=data.MONSTER_AVATAR['?'],
                     large_image_url=data.MONSTER_AVATAR['?']
                 )))
+
+        if supports_display(handler_input):
+            img = Image(sources=[ImageInstance(
+                url=data.MONSTER_AVATAR['?'])])
+            primary_text = 'Damage Rate: {}<br/> Cast Time: {} MP cost: {}'.format(
+                info['rate'], info['cast'], info['mp'])
+            if len(info['effect']):
+                primary_text += '<br/> Effect: {}'.format(info['effect'])
+            primary_text = get_rich_text_content(primary_text)
+            handler_input.response_builder.add_directive(
+                RenderTemplateDirective(
+                    BodyTemplate2(
+                        back_button=BackButtonBehavior.VISIBLE,
+                        image=img, title=title,
+                        text_content=primary_text)))
 
     else:
         speech_text = '{} is not a skill. '.format(query.title())
