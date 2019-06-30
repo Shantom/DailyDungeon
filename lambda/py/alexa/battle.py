@@ -125,14 +125,15 @@ class Battle:
             ret.image = Image(sources=[ImageInstance(url=data.PLAYER_AVATAR)])
 
         else:
-            ret.image = Image(sources=[ImageInstance(url=data.MONSTER_AVATAR)])
+            ret.image = Image(sources=[ImageInstance(
+                url=data.MONSTER_AVATAR['ratpier'])])
 
         p_st = [data.EMOJI_STATUS[x] for x in p_st]
         m_st = [data.EMOJI_STATUS[x] for x in m_st]
 
         primary_text = "<div align='center'><font size='5'>{} DMG: {}</font></div>".format(
             move, str(dmg))
-        secondary_text =  "<div align='center'>Your HP:{} {}".format(p_hp, ''.join(
+        secondary_text = "<div align='center'>Your HP:{} {}".format(p_hp, ''.join(
             p_st)) + "Monster HP:{} {}</div>".format(m_hp, ''.join(m_st))
 
         ret.text_content = get_rich_text_content(primary_text=primary_text,

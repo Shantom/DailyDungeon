@@ -1,183 +1,470 @@
 # The Daily Dungeon Game via Amazon Alexa
 
-## 1. Overview
+## Overview
 
-### 1.1 Game Name and Running Environment.
+### Game Name and Running Environment.
 
 Name: Daily Dungeon
 
 Environment: Amazon Alexa
 
-### 1.2 Game Background and Story
+### Game Background and Story
 
-#### Background
-
-They are the [Azure Dragon](https://en.wikipedia.org/wiki/Azure_Dragon) of the East, the [Vermilion Bird](https://en.wikipedia.org/wiki/Vermilion_Bird) of the South, the [White Tiger](https://en.wikipedia.org/wiki/White_Tiger_(China)) of the West, and the [Black Turtle](https://en.wikipedia.org/wiki/Black_Tortoise) (also called "Black Warrior") of the North
-
-主角小林跟随师父进入了地下城探寻秘密，不料刚进入地下城的入口，师父就神秘消失了。此时的小林发现地下城的入口被关闭，墙壁上浮现出一行字：须打败四圣兽，方可通过试炼，逃出生天。地下城分为16层，每层有一个守关boss看守，每4层有一个圣兽看守。小林不断地通过击杀当前楼层的小怪获得经验值和金币，提升自己的能力。当小林终于击败四圣兽来到了最终关卡，却发现。。。
-
-Our hero Lin follows master into the dungeon to explore the secret, but as soon as he enters the dungeon entrance, his master mysteriously disappears. 
+Our hero, Lin, follows his master into the dungeon to explore the secret, but as soon as he enters the dungeon entrance, his master mysteriously disappears. 
 At this time, Lin found that the gate of the dungeon had been closed, and a line appeared on the wall: defeat the four holy beasts before you could escape from here. 
 The dungeon is divided into 16 floors, each guarded by a boss, and every four floors guarded by a holy beast. Lin needs to find a way through a maze before he could fight the boss.
-Everyday, Lin beats monsters on the current floor to gain experience and gold coins, with which he gets stronger. 
-When Lin finally defeated the four beasts and entered the final floor, only to find that...
+Everyday, Lin beats monsters on the current floor to gain experience, with which he gets stronger. 
+When Lin finally defeated the four beasts and entered the final floor, only to find that his master is the yellow dragon.
 
-### 1.3 Game Features
+### Game Features
 
-Daily Dungeon is a role-playing game. Players can help our hero Lin when he needs to make a decision.
+Daily Dungeon is a role-playing game. Players can help Lin through the maze, beat a variety of boss with reasonable skill. 
+When players is not on-line, that is, not logged in to the game, Lin will automatically beat the monster on the current floor to gain experience. When the experience value meets the amount required by Lin's current level, Lin will automatically level up and get his ability improved. 
+When Lin comes to a specific level, he will learn specific skills. Players can help Lin equip a certain skill to deal with different bosses. 
+Players can guide Lin through the maze, in which Lin may encounter many different random events that increase or decrease Lin's temporary statistics.
 
-每日地牢为角色扮演游戏。玩家可以帮助小林合理选择技能，通过迷宫，击败守关boss。当玩家不在操作时，即未登录游戏时，小林将会自动在当前楼层不断击败小怪来获取经验值和金币。当经验值满足了小林当前等级所需的经验时，小林将会自动升级，并提升各项属性。金币可用来（暂无用处）。当升至特定等级时，小林将领悟特定招式，玩家可帮助小林装备某种招式来应对不同的boss。玩家可指引小林通过迷宫，在迷宫中，小林可能会遇到许多不同的随机事件，这些事件或增加或降低小林的临时属性。
+## Game Mechanism
 
-## 2. Game Mechanism
+### Terms
 
-### 2.1 Rules
+- An **experience** point (often abbreviated to **exp** or **XP**) is a unit of measurement used in role-playing
+  games (RPGs) to quantify a player character's progression through the game. Characters
+  need exps to level up. [^EXP]
 
-1. 当玩家不在线时，小林将自动在当前楼层不断击败小怪来获取经验值和金币。
+- In RPGs, characters start as fairly weak and untrained. When a sufficient amount of experience is obtained, the character "**levels up**", achieving the next stage of character development. Such an event usually increases the character's statistics. [^LVUP]
 
-### 2.2 战斗方式
+- A **statistic** (or **stat**) in role-playing games is a piece of data that represents a particular aspect of a fictional character. That piece of data is usually a integer. [^STAT]
 
-本游戏战斗采用全自动战斗，玩家在战斗之前可通过探索迷宫获取不同的buff，调整携带的技能。对战双方各自拥有两个进度条，一个普通攻击进度条（最高100），一个释放技能进度条（最高1000），每经过一个单位时间，四个进度条各自增加1点，当进度达到所要释放攻击或技能所需要的值后，玩家/怪物将会进行一次攻击/技能，并在攻击过后将进度条减去相应的值。
+- In video games, a **Boss** is a significant computer-controlled enemy. A fight with a boss character is
+  commonly referred to as a boss battle or boss fight. [^BOSS]
 
-### 2.3 属性说明（敌我相同）
+- **Farming** refers to a gaming tactic where a player performs repetitive actions to gain experience point
+  or some form of in-game currency. [^FARM]
 
-attack: 增加攻击力可增加对敌人杀伤力的伤害值。一般是衡量人物强与弱的重要指标。
+- A **Normal Attack** is executed by the player simply striking a foe. [^NA]
 
-defense:一项决定每次被击中时可以抵消多少伤害的属性
+- **Skills** in game are abilities that a character have. They are cast to do special attacks.
 
-HP(Hit Point): the amount of health 
+- In RPGs, the terms **Buff** and **Debuff** are commonly used to describe **status effects**. *Buff* is the term generically used to describe a positive status effect that affects mainly player or enemy statistics, while *debuff* is to describe a negative status effect. [^BUFF]
 
-MP(Magic Point): 使用技能所需要消耗的point
+[^FARM]:https://www.techopedia.com/definition/19278/farming
+[^BOSS]:https://en.wikipedia.org/wiki/Boss_(video_gaming)
+[^EXP]:https://en.wikipedia.org/wiki/Experience_point
+[^LVUP]: https://en.wikipedia.org/wiki/Experience_point
+[^STAT]: https://en.wikipedia.org/wiki/Statistic_(role-playing_games)
+[^NA]: https://epicbattlefantasy.fandom.com/wiki/Normal_Attack
+[^BUFF]: https://en.wikipedia.org/wiki/Status_effect#Buffs
 
-agility（in percentage) :普通攻击速度， 普通攻击需要消耗取整（100/agility) 行动值
 
-dexterity（in percentage)  : 技能释放速度，技能需要消耗取整（技能cast/dexterity）行动值
 
-### 2.4 迷宫房间
+### Rules
 
-每个房间有通往下一个房间的通路，可能存在于四个方向（东南西北）的一个或几个。如果该房间有随机事件，则在进入的时候强制触发。只有在boss房里，才可以挑战boss，一旦挑战成功则自动下一层，且自动退出迷宫。如果挑战失败，则没有惩罚。
+1. When the player is not online, Lin will farm automatically by beating the monster constantly on the current floor to gain experience.
+2. Players can explore the maze before the battle to acquire different buffs/debuffs. Also, players can decide which skill to use. 
 
+### Maze and Room
 
+The maze consists of several rooms. Each room has access to the next room, which may exist in one or more of the four directions (north, east, south and west). If there is a random event in the room, it will be triggered when Lin enters. Only in the boss room can Lin challenge boss. When Lin successfully beat the boss, he will automatically exit the maze and  go downstairs to the next floor. If Lin fails, there is no punishment and Lin is still at the boss room.
 
-### 2.5 玩法
+### Combat Systems
 
-完全语音操作，反馈包括alexa语音和card屏幕显示。
+This game uses fully automatic combat. Each side, player or monster, has two progress gauges, a normal attack gauge (up to 100 units) and a cast skill gauge (up to 1000 units). For each unit of time, each of the four gauges is increased by 1 unit. When the progress reaches the required value for the attack or skill to be cast, the player / monster will conduct an attack / skill and subtract the corresponding value from the progress gauge after the move.
 
-## 3. Game Elements
+### Status Attributes Description
 
-### 3.1 Roles
+**Attack**: Increases of attack to enemies by increasing damage. It is generally an important index to measure the strength and weakness of characters. 
 
-Player: Lin, Male, apprentice of the Master. 该游戏为角色扮演类游戏，玩家只可以操纵小林在地下城世界中进行游玩。
+**Defense**: It determines how much damage can be offset each time it is hit. 
 
-四圣兽：四方守护神，镇守五行元素（金木水火）
+**HP**(Hit Point): the amount of health.
 
-黄龙：The master，中央守护神，镇守元素（土）
+**MP**(Magic Point): Points consumed by skills usage. 
 
-### 3.2 可能出现的技能
+**Agility**: Normal attack speed. A normal attack consumes round of (100/agility) amount of normal attack gauge.
 
-重击
+**Dexterity**: Skill cast speed. A skill consumes round of (skill_cast/dexterity) action value, where skill_cast is an attribute of a skill.
 
-疯狂连斩 流血，每次普攻掉血
+### Damage Calculation
 
-施毒 中毒，每次技能掉血
+Normal Attack: Attacker's attack - defender's defense.
 
-断筋 100，停止读条
+Skill: (Attacker's attack - defender's defense) * skill's rate.
 
-冰冻 120，减缓普通攻击
+Bleeding: If some side is bleeding, he/it will lose 10% of max HP every time he/it normal attacks.
 
-治疗 
+### Controls
 
+Players completely control via voice. Feedbacks include Alexa voice and display, if there is a screen on the device.
 
+## Game Elements
 
-威吓
+### Roles
 
-### 3.3 可能出现的随机事件
+Player: Lin, apprentice of the Master. 
 
-攻击力上升/下降
+Four Holy Beasts: They are the Azure Dragon of the East, the Vermilion Bird of the South, the White Tiger of the West, and the Black Turtle (also called "Black Warrior") of the North.
 
-防御力上升/下降
+Yellow Dragon: The master, central guardian.
 
-血量恢复/减少
+### Possible Skills
 
+Thump: a high rate attack skill.
 
+Pierce: a higher rate attack skill.
 
-### 3.4 可能出现的boss
+Blade: Bleeding. Lose HP when normal attacking.
 
-四圣兽：青龙白虎朱雀玄武
+Cross Strike: Bleeding. A higher rate than Blade.
 
+Cold Bolt: Frozen. Decrease normal attack speed.
 
+Blizzard: Frozen. A higher rate than Cold Bolt.
 
-## 4. 持久化数据
+### Possible Random Events
 
-attribute
+Found a sword: It increases Lin's attack.
 
-- character
-  - level
-  - floor
-  - exp
-  - coin
-  - attack
-  - defense
-  - hp
-  - mp
-  - agility
-  - dexterity
-  - cur_skill
-  - skills
-  - sec_per_round
-- in_maze
-- maze
-  - cur_room
-    - id
-    - east
-    - south
-    - west
-    - north
-    - is_visited
-    - room_type
-  - rooms (dict where key is id and value is like cur_room)
-    - ...
-- ready_for_boss
-- temp_buff
+Fell over: It decreases Lin's attack.
 
-## 5. 模块设计
+Found a portion: It either gives Lin extra HP or lose some HP.
 
-### 5.1 Character
+Found a shield: It increases Lin's defense.
 
-### 5.2 Mob
+Attacked by a slime: It decreases Lin's defense.
 
-### 5.3 Battle
+### Possible Bosses
 
-### 5.4 Maze
+For floor of 1,2,3,5,6,7,9,10,11,13,14,15, the twelve Chinese zodiac signs, rat, ox, tiger, rabbit, dragon, snake, horse, sheep, monkey, rooster, dog and pig, occupy one floor each.
 
-### 5.5 Data
+For floor of 4, 8, 12, 16, the Four Holy Beasts, which are the Azure Dragon of the East, the Vermilion Bird of the South, the White Tiger of the West, and the Black Tortoise of the North, guard each floor.
 
-### 5.6 Intents
+For the last floor, 17, the Yellow Dragon takes the responsibility.
 
-#### 5.6.1 Launch request
+## Development Platform
 
-#### 2 enter maze
+### Amazon Alexa
 
-#### 3 resume maze
+This game project is an Amazon Alexa custom skill. Note that the `skill` here is different from the skill in the previous chapter.
 
-#### 4. discard maze
+To complete a custom skill project, it is necessary to have a structure of models, lambda and skill manifest. For more details, see Chapter [Components](# Components).
 
-#### location 
+#### Skill manifest
 
-#### move
+The skill manifest is the JSON representation of the skill, and provides Alexa with all of the metadata required. The metadata include publishing information, such as skill name and description, and supported APIs for devices. [^MANI]
 
-#### challenge_boss
+[^MANI]:https://developer.amazon.com/docs/smapi/skill-manifest.html
 
-#### battle_log
+#### Interaction Models
 
-#### boss info
+An interaction model is a voice interface through which users interact with the skill. The model is organized by mapping from users' *spoken* input to the *intents* the cloud-based service can handle. [^MODEL]
 
-#### check status
+[^MODEL]: https://developer.amazon.com/docs/custom-skills/create-the-interaction-model-for-your-skill.html
 
-#### check skill
+To declare this mapping, the following inputs are supplied:
 
-#### TODO: set skill
+1. **Intents**: An *intent* represents an action that fulfills a user's spoken request. Intents can optionally have arguments called *slots*. Intents are specified in a JSON structure called the *intent schema*.
+2. **Sample utterances**: A set of likely spoken phrases mapped to the intents. This should include as many representative phrases as possible.
+3. **Custom slot types**: A representative list of possible values for a slot. Custom slot types are used for lists of items that are not covered by one of Amazon's built-in slot types.
+4. **Dialog model** (optional): A structure that identifies the steps for a *multi-turn conversation* between your skill and the user to collect all the information needed to fulfill each intent. This simplifies the code you need to write to ask the user for information.
 
-## 6. 数值设计
+A skill can have more than one model in different languages. In this skill, I use only one model, en_US. 
+
+Users say a skill's **invocation name** to begin an interaction with a particular custom skill. This skill's invocation name is "Daily Dungeon", users can say: "Open Daily Dungeon" to launch the skill. 
+
+#### Lambda Function
+
+Lambda function in a custom skill for Alexa is a web service that accepts requests from and sends responses to the Alexa service in the cloud. The web service can be written in any programming language, as long as it meets the requirements below. [^WS]
+
+[^WS]:https://developer.amazon.com/docs/custom-skills/host-a-custom-skill-as-a-web-service.html
+
+1. The service must be accessible over the Internet.
+2. The service must accept HTTP requests on port 443.
+3. The service must support HTTP over SSL/TLS, using an Amazon-trusted certificate. Your web service's domain name must be in the `Subject Alternative Names` (SANs) section of the certificate. For testing, you can provide a self-signed certificate.
+4. The service must verify that incoming requests come from Alexa. 
+5. The service must adhere to the Alexa Skills Kit interface.
+
+I build the service using Python with the Alexa Skills Kit (ASK) SDKs for Python to verify that requests to the web service do come from Alexa. Also, I use [AWS Lambda](# AWS Lambda) to host my web service, which will be mentioned later.
+
+The AWS Lambda requires that its handler's name should be the same as the main code file. Assume that I set the handler's name as `main.handler`, then it calls the handler methods defined in `main.py`.
+
+In `main.py`, handlers are defined here, each processing a certain intent or a kind of request. For more details, see Chapter [Module Design](# Module Design).
+
+#### Session
+
+The skill can keep the *skill session* open to conduct a back-and-forth interaction with the user. While the session is open, the user does not need to use the invocation name to talk to the skill. [^S]
+
+[^S]: https://developer.amazon.com/docs/custom-skills/manage-skill-session-and-session-attributes.html
+
+Lifecycle of a skill session [^S]:
+
+1. A skill session begins when a user invokes your skill and Alexa sends your skill a request. The request contains a session object that uses a Boolean value called `new` to indicate that this is a new session.
+
+2. The skill receives the request and returns a response for Alexa to speak to the user.
+
+3. What happens next depends on the value of the `shouldEndSession` parameter in the skill's **response**:
+
+   - `true` – The session ends. Alexa, not the skill, handles any further speech from the user. If the user re-invokes the skill, Alexa creates a new session (that is, go back to step 1).
+
+   - `false` – The session stays open and Alexa opens the microphone to indicate that she expects the user to respond. If the user's response maps to your interaction model, a new intent is sent to the skill and the process goes back to step 2.
+
+     However, if eight seconds elapse without a response from the user, Alexa closes the microphone. If the skill specified a reprompt, Alexa reprompts the user to speak and opens the microphone for eight more seconds. If the user still does not respond, the session normally ends.
+
+     The session may remain open for a few more seconds with the microphone closed if the skill is used on a device with a screen as described in How devices with screens affect the skill session.
+
+     One exception that overrides this: the directives to start the purchase flow for in-skill purchasing automatically end the session, regardless of the `shouldEndSession` value. You need to use persistent storage to resume the skill once the purchase flow completes. 
+
+   - `undefined` (not set or `null`) – The session's behavior depends on the type of Echo device that the user is interacting with and the content of the response. 
+
+For most of my intents, I set the `shouldEndSession`to `false`, because a game should not end just because the user is thinking for a long time.
+
+#### Cards
+
+Interactions between a user and an Alexa device can include **home cards** displayed in the Amazon Alexa App, the companion app available for Fire OS, Android, iOS, and desktop web browsers. An Alexa-enabled device with a screen also displays cards that have been designed for display in the Alexa app.
+
+差一张图
+
+#### Display Templates
+
+A skill developed for Alexa-enabled devices with a screen can also support **display templates**, which are similar to cards and are viewed directly on the screen.
+
+差一张图
+
+### AWS Lambda
+
+The easiest way to build the cloud-based service for a custom Alexa skill is to use AWS Lambda, an Amazon Web Services offering that runs code only when it's needed and scales automatically, so there is no need to provision or continuously run servers.  [^AL]
+
+I upload my code for my Alexa skill to AWS Lambda and it does the rest, executing it in response to Alexa voice interactions and automatically managing the compute resources.
+
+[^AL]: https://developer.amazon.com/docs/custom-skills/host-a-custom-skill-as-an-aws-lambda-function.html
+
+### Amazon DynamoDB
+
+It is inevitable to have to store attributes for some reasons. We can store them as session attributes, but they would be lost after the session ends. For those attributes that need to be persistent, we need to use a database to store them. Fortunately, the ASK-SDK for Python allows us to get full access to DynamoDB. 
+
+Amazon DynamoDB is a fully managed proprietary NoSQL database service that supports key-value and document data structures. [^DDB]
+
+[^DDB]:https://en.wikipedia.org/wiki/Amazon_DynamoDB
+
+
+
+## Components 
+
+### Manifest
+
+The following is some key metadata in my manifest, which is actually in JSON format.
+
+- Publishing Information
+  - locales/en-US
+    - name: "Daily Dungeon"
+    - description: "An role playing game with idle game element in it."
+    - summary: "Launch the skill"
+    - example phrases: ["open daily dungeon"]
+  - category: "GAME"
+- APIs
+  - custom
+    - endpoint                            #  where the service locates
+      - sourceDir: "lambda/py/lambda_upload"
+      - uri: "ask-custom-Demo-default"
+    - interfaces : [ "RENDER_TEMPLATE"]                          # it is necessary to display
+
+Publishing Information is to determine how the skill is presented to end users in the skill store or Alexa app. APIs specify required information for all interfaces that a skill supports.
+
+### Interaction Model
+
+The following is some key *intents* and their utterances.
+
+- BossInfoIntent:
+  - tell me about the boss
+  - tell me about {bossname}
+- CheckMessagesIntent
+  - read my message
+  - check my message
+- CheckSkillsIntent
+  - check my skills
+  - check my abilities
+- CheckStatusIntent
+  - check my status
+- ChangeSkillsIntent
+  - change my skill to {skill}
+  - set my skill to {skill}
+- SkillsInfoIntent
+  - tell me about {skill}
+  - what is {skill}
+- ChallengeBossIntent
+  - challenge the boss
+  - fight the boss
+- BattleLogIntent
+  - check my last battle
+  - review the last battle
+- EnterMazeIntent
+  - enter the maze
+- ResumeMazeIntent
+  - resume the maze
+- DiscardMazeIntent
+  - discard the maze
+- LocationIntent
+  - where am i
+  - locate myself
+  - what is around me
+- MoveIntent
+  - go {direction}
+  - head {direction}
+  - move to the {direction}
+
+Those words enclosed in brackets are [*slots*](# Interaction Models), where sample values are included.
+
+- LIST_OF_SKILLS (skill)
+- LIST_OF_BOSSES (bossname)
+- LIST_OF_DIRECTIONS (direction)
+
+### Persistent data
+
+The following is some attributes that need to be stored persistently.
+
+- character: Map
+  - level: Number
+  - floor: Number
+  - exp: Number
+  - attack: Number
+  - defense: Number
+  - hp: Number
+  - mp: Number
+  - agility: Number
+  - dexterity: Number
+  - cur_skill: String
+  - skills: List of Strings
+  - sec_per_round: Number
+  - last_offline_time: Number
+  - messages: List of Strings
+- in_maze: String
+- maze: Map
+  - cur_room: Map
+    - id: String
+    - east: String or Null
+    - south: String or Null
+    - west: String or Null
+    - north: String or Null
+    - is_visited: Boolean
+    - room_type: String or Null
+  - rooms: Maps of id to room
+    - ...... same as cur_rooms
+- ready_for_boss: Boolean
+- temp_buff: Map
+  - attack: Number
+  - defense:: Number
+  - hp: Number
+  - mp: Number
+  - cur_skill: String or Null
+  - agility: Number
+  - dexterity: Number
+
+### Intent Handlers
+
+These intent handler methods are in the `hello_world.py` file, which is the lambda function entry.
+
+#### LaunchRequest
+
+A `LaunchRequest` is an object that represents that a user made a request to an Alexa skill, but did not provide a specific intent.
+
+The handler firstly checks whether there are already persistent attributes in the database. If not, it will create a new `Character` and store it in the database. If so, it will load the `Character` and call its `claim_loot` method to claim what the character farms during the offline time. Then, it tells users how long they have been offline and how much EXP they obtained.
+
+Also, the attribute `in_maze` tells if Lin is still in a maze or not, which will help users remember where they were at the end of last conversation with Alexa.
+
+图
+
+#### CheckMessagesIntent
+
+There will be something happening during the offline time, such as skill acquirement. Note that our hero, Lin, will level up when he gets enough EXP during the offline farming. Lin acquires a corresponding new skill when he gets to a certain level. Therefore, we need to acknowledge the player what have been acquired. Such messages will be stored as a persistent attribute, which can be read when the player log in.
+
+The handler load the attribute, read the first one out, and pop it out of the attribute. The handler only reads one at a time of this intent.
+
+#### EnterMazeIntent
+
+The `EnterMazeIntent` is the first part of main content of Daily Dungeon. Players need to enter the maze before they could explore it and finally challenge the boss.
+
+At first, the handler checks `in_maze` to determine if Lin has a uncompleted maze. If so, it will tell the user to resume or discard the maze instead of entering a new one. 
+
+If Lin has not entered any maze on this floor, it will create a `Maze` object, which refers to the hard code in `data.py`, depending on which floor Lin is on.  Also, the handler will create a `TempCharacter` object to store temporary status for oncoming random events. These objects will be stored as persistent attributes. Then it tells the user that Lin is in the initial room and encourages them to move.
+
+#### ResumeMazeIntent
+
+If the session ends before Lin successfully defeats the boss. Then the user need to decide either resume the old one or discard it. If the user resumes it, the handler will change `in_maze` to IN that indicates the user can give orders like move or fight.
+
+#### DiscardMazeIntent
+
+Similar to `ResumeMazeIntent`, `DiscardMazeIntent` is the other choice when Lin is still in the maze but the user does not want to continue. Generally, it happens when the user has triggers too many bad events to fight the boss. Fortunately, we provide this option to allow the player to start it over. The handler change  `in_maze` to NO that indicates there is no more maze in use.
+
+#### MoveIntent
+
+This intent is triggered when the player is trying to move to another room. What the player said should include a specific direction, north, east, south or west. If not, the handler will tell the player to specify one. 
+
+When the handler retrieved the direction, it loads the `Maze`, the current `Room`, the `Character` and the `TempCharacter`. According to the Maze and the current Room, it can find if there is a room at that direction. If not, it tells the user to pick up another direction. 
+
+If there is a room at that direction, it changes the current `Room` to the new one and sets the new room as *visited*. Then it checks the new room's type to see if it has a random event to trigger. If so, it puts the obtained buff or debuff on the `TempCharacter`. The player will be told what has been encountered.
+
+If the new room is the boss room, Lin will be able to fight the boss. The handler sets a boolean persistent attribute `ready_for_boss` to store it.
+
+#### LocationIntent
+
+It is easy to lose their way for players, especially right after resuming a maze with a long time of offline. This can be attributed to the fact that Alexa is not a visual platform. There is no map for a maze, so players need to have a rough image in their mind about the what the maze looks like. We provide `LocationIntent` to help players remember where they are, where they have been and where they have not.
+
+The handler loads the `Maze` and the current `Room`. It traverses the current room's four directions in random order. Then it tells the user the current room's id and the first direction it found not visited.
+
+#### ChallengeBossIntent
+
+The goal of entering a maze is to find the boss and defeat it. When Lin is in the boss room and able to fight the boss, the player can give this intent to let Lin fight. 
+
+The handler firstly checks `ready_for_boss` to ensure Lin is in the boss room. It creates a `Battle` object to manage the whole battle. The `Battle` requires the `Character` and `TempCharacter` and returns the battle result and its log information. For more information, see section [Battle](#Battle). If Lin wins, the handler sets `in_maze` to NO and put Lin into the next floor. The handler stores the battle log as a session attribute for the player to review it later.
+
+#### BattleLogIntent
+
+Players can review the last battle log for next try to fight the boss. With the information, it is easy to see what happened during the battle and so that players have another try with another skill or just wait for Lin to farm and get stronger.
+
+The handler loads the battle log attribute, if any. Then let Alexa read it out. If there is a screen on the device, it will display the details of every move of both sides.
+
+#### ChangeSkillsIntent
+
+It is quite normal when Lin successfully beat the boss of the previous floor but fails on the current floor with the same skill equipped. Therefore, players need to make a choice on which skill to use on a certain boss.
+
+The handler tries to get the slot value of *skill* in users' input. When it obtains the new skill name, the handler set the new skill for the current equipped skill. Then it stores it in the database.
+
+#### BossInfoIntent
+
+Players may want to know better the boss they are going to fight. We provide this intent to help users adjust their tactics before they start a battle.
+
+The handler tries to look for the boss name in users' spoken input. If there is not a boss name in the input, it will by default retrieve Lin's current floor's boss name. Then the handler gets the boss information from `data.py` and put it into a sentence, as well as into a Card or a Display Template, if there is a screen in users' device.
+
+#### SkillsInfoIntent
+
+Similar to `BossInfoIntent`, players may want to know what the skills they have actually do or exact statistics of a certain skill. `SkillsInfoIntent` is the right intent.
+
+The handler retrieves information from `data.py` and then gives it to users with voice and display.
+
+#### CheckStatusIntent
+
+This intent is to tell the player the current statistics of Lin, including attack, defense, hp, mp, level, floor, exp and the current equipped skill.
+
+The handler loads the information from database and then gives it to users with voice and display.
+
+#### CheckSkillsIntent
+
+This intent is to tell the player what skills has Lin learned. Players can pick up a suitable skill for fighting a certain boss after they know the information.
+
+The handler loads the information form database and then gives it to users with voice and display.
+
+### Module Design
+
+#### Character
+
+#### Mob
+
+#### Battle
+
+#### Maze
+
+#### Data
+
+## 数值设计
 
 技能
 
@@ -189,7 +476,13 @@ boss属性
 
 随机事件
 
-## 7. 游戏基本流程
+迷宫设计
+
+
+
+保证游戏过程平滑
+
+## 游戏基本流程
 
 
 

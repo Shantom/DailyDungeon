@@ -72,7 +72,9 @@ BOSS_OF_FLOOR = [
     'hammerkong',
     'kataroost',
     'chakanine',
-    'white tiger'
+    'white tiger',
+
+    'yellow dragon'
 ]
 
 MOB_INFO = {
@@ -117,12 +119,17 @@ MOB_INFO = {
 
 SKILL_ACQUIRE = [
     None,
+    'Thump',
+    None,
+    'Pierce',
+    None,
     'Blade',
     None,
+    'Cold Bolt',
     None,
+    'Cross Strike',
     None,
-    None,
-    None,
+    'Blizzard',
     None,
 
 ]

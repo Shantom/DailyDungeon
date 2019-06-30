@@ -99,7 +99,7 @@
                     "name": "CheckSkillsIntent",
                     "slots": [],
                     "samples": [
-                        "my skill",
+                        "my skills",
                         "show me my skills",
                         "see my skills",
                         "check my skills",
@@ -278,17 +278,87 @@
                     "values": [
                         {
                             "name": {
-                                "value": "awakened shrub two"
+                                "value": "boarbow"
                             }
                         },
                         {
                             "name": {
-                                "value": "awakened shrub"
+                                "value": "ratpier"
                             }
                         },
                         {
                             "name": {
-                                "value": "monster a"
+                                "value": "broadbull"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "black tortoise"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "tigermortar"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "bunnyblast"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "drident"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "azure dragon"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "whiptail"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "thoroughblade"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "ramram"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "vermilion bird"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "hammerkong"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "kataroost"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "chakanine"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "white tiger"
+                            }
+                        },
+                        {
+                            "name": {
+                                "value": "yellow dragon"
                             }
                         }
                     ]

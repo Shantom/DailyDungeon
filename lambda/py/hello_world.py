@@ -130,7 +130,7 @@ def enter_maze_intent_handler(handler_input):
     attr = handler_input.attributes_manager.persistent_attributes
     attr['in_maze'] = 'IN'
     cur_char = Character(attr['character'])
-    floor = 0 if cur_char.floor == 3 else cur_char.floor
+    floor =  cur_char.floor
     maze = Maze(floor=floor)
     attr['maze'] = maze.to_dict()
 
