@@ -1,4 +1,5 @@
-PLAYER_AVATAR = 'https://www.pixilart.com/images/art/49e12618c6f9e29.png'
+PLAYER_AVATAR = 'https://s2.ax1x.com/2019/07/01/Z3fCh6.jpg'
+PLAYER_STANDING = 'https://s2.ax1x.com/2019/07/01/Z36YHP.png'
 MONSTER_AVATAR = {
     '?': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
     'boarbow': 'https://www.pixilart.com/images/art/7a500637e457561.png',
@@ -131,7 +132,16 @@ SKILL_ACQUIRE = [
     None,
     'Blizzard',
     None,
-
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
+    None,
 ]
 
 SKILL_INFO = {
@@ -188,7 +198,7 @@ MAZE_OF_FLOOR = [
             'east': None,
             'south': None,
             'west': None,
-            'room_type': None
+            'room_type': 'VISITED'
         },
         '1': {
             'id': '1',
@@ -230,7 +240,7 @@ MAZE_OF_FLOOR = [
             'east': None,
             'south': None,
             'west': None,
-            'room_type': None
+            'room_type': 'VISITED'
         },
         '1': {
             'id': '1',
@@ -272,7 +282,7 @@ MAZE_OF_FLOOR = [
             'east': None,
             'south': None,
             'west': None,
-            'room_type': None
+            'room_type': 'VISITED'
         },
         '1': {
             'id': '1',
@@ -322,7 +332,7 @@ MAZE_OF_FLOOR = [
             'east': '3',
             'south': None,
             'west': '2',
-            'room_type': None
+            'room_type': 'VISITED'
         },
         '1': {
             'id': '1',
@@ -388,7 +398,7 @@ MAZE_OF_FLOOR = [
             'east': None,
             'south': None,
             'west': None,
-            'room_type': None
+            'room_type': 'VISITED'
         },
         '1': {
             'id': '1',
@@ -454,31 +464,287 @@ MAZE_OF_FLOOR = [
             'east': None,
             'south': None,
             'west': None,
-            'room_type': None
+            'room_type': 'VISITED'
         },
         '1': {
             'id': '1',
-            'north': '6',
-            'east': '3',
-            'south': '0',
-            'west': '2',
+            'north': 'boss',
+            'east': '5',
+            'south': None,
+            'west': None,
             'room_type': None
         },
         '2': {
             'id': '2',
-            'north': 'boss',
-            'east': '1',
+            'north': None,
+            'east': 'boss',
             'south': None,
             'west': None,
             'room_type': 'HEAL'
         },
         '3': {
             'id': '3',
-            'north': '5',
+            'north': None,
             'east': None,
-            'south': '4',
+            'south': 'boss',
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        '4': {
+            'id': '4',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': 'boss',
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': None,
+            'east': None,
+            'south': '6',
             'west': '1',
             'room_type': None
+        },
+        '6': {
+            'id': '6',
+            'north': '5',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': '3',
+            'east': '4',
+            'south': '1',
+            'west': '2',
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 7
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '1',
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '2',
+            'east': '0',
+            'south': None,
+            'west': 'boss',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': None,
+            'east': None,
+            'south': '1',
+            'west': None,
+            'room_type': 'POISON'
+        },
+        '3': {
+            'id': '3',
+            'north': None,
+            'east': None,
+            'south': 'boss',
+            'west': None,
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': 'boss',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'ATTDOWN'
+        },
+        '5': {
+            'id': '5',
+            'north': '6',
+            'east': 'boss',
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '6': {
+            'id': '6',
+            'north': None,
+            'east': None,
+            'south': '5',
+            'west': None,
+            'room_type': 'DEFUP'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': '3',
+            'east': '1',
+            'south': '4',
+            'west': '5',
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 8
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': '2',
+            'south': '1',
+            'west': None,
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '0',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        '2': {
+            'id': '2',
+            'north': '3',
+            'east': '5',
+            'south': '4',
+            'west': '0',
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': None,
+            'east': None,
+            'south': '2',
+            'west': None,
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': '2',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': None,
+            'east': 'boss',
+            'south': None,
+            'west': '2',
+            'room_type': 'HEAL'
+        },
+        '6': {
+            'id': '6',
+            'north': None,
+            'east': None,
+            'south': 'boss',
+            'west': None,
+            'room_type': None
+        },
+        'boss': {
+            'id': 'boss',
+            'north': '6',
+            'east': None,
+            'south': None,
+            'west': '5',
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 9
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '1',
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': None,
+            'east': '0',
+            'south': None,
+            'west': '2',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': '3',
+            'east': '1',
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': None,
+            'east': '4',
+            'south': '2',
+            'west': None,
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': 'boss',
+            'east': '5',
+            'south': None,
+            'west': '3',
+            'room_type': 'ATTUP'
+        },
+        '5': {
+            'id': '5',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '4',
+            'room_type': 'HEAL'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': None,
+            'south': '4',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 10
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '1',
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': None,
+            'east': '0',
+            'south': None,
+            'west': '2',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': None,
+            'east': '1',
+            'south': '3',
+            'west': 'boss',
+            'room_type': 'HEAL'
+        },
+        '3': {
+            'id': '3',
+            'north': '2',
+            'east': None,
+            'south': '4',
+            'west': None,
+            'room_type': 'ATTUP'
         },
         '4': {
             'id': '4',
@@ -492,23 +758,453 @@ MAZE_OF_FLOOR = [
             'id': '5',
             'north': None,
             'east': None,
-            'south': '3',
+            'south': 'boss',
             'west': None,
-            'room_type': 'DEFUP'
+            'room_type': None
         },
         '6': {
             'id': '6',
+            'north': 'boss',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'POISON'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': '5',
+            'east': '2',
+            'south': '6',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 11
+        '0': {
+            'id': '0',
             'north': None,
             'east': None,
             'south': '1',
+            'west': None,
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '0',
+            'east': None,
+            'south': '2',
+            'west': '3',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': '1',
+            'east': None,
+            'south': None,
+            'west': '4',
+            'room_type': 'DEFUP'
+        },
+        '3': {
+            'id': '3',
+            'north': None,
+            'east': '1',
+            'south': '4',
+            'west': 'boss',
+            'room_type': 'DEFUP'
+        },
+        '4': {
+            'id': '4',
+            'north': '3',
+            'east': '2',
+            'south': None,
             'west': None,
             'room_type': None
         },
         'boss': {
             'id': 'boss',
             'north': None,
+            'east': '3',
+            'south': None,
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 12
+        '0': {
+            'id': '0',
+            'north': '3',
+            'east': '2',
+            'south': None,
+            'west': '1',
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '0',
+            'east': '2',
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': '0',
+            'east': None,
+            'south': None,
+            'west': '1',
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': 'boss',
+            'east': '5',
+            'south': '0',
+            'west': '4',
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': None,
+            'east': '3',
+            'south': None,
+            'west': '6',
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': None,
+            'east': '7',
+            'south': None,
+            'west': '3',
+            'room_type': None
+        },
+        '6': {
+            'id': '6',
+            'north': None,
+            'east': '4',
+            'south': None,
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        '7': {
+            'id': '7',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '5',
+            'room_type': 'DEFUP'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': None,
+            'south': '3',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 13
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': None,
+            'south': '1',
+            'west': None,
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '0',
+            'east': None,
+            'south': None,
+            'west': '2',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': '3',
+            'east': '1',
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': '4',
             'east': None,
             'south': '2',
+            'west': '5',
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': None,
+            'east': None,
+            'south': '3',
+            'west': 'boss',
+            'room_type': 'ATTUP'
+        },
+        '5': {
+            'id': '5',
+            'north': 'boss',
+            'east': '3',
+            'south': None,
+            'west': None,
+            'room_type': 'ATTDOWN'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': '4',
+            'south': '5',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 14
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': None,
+            'south': '1',
+            'west': None,
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '0',
+            'east': '2',
+            'south': '5',
+            'west': None,
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': None,
+            'east': '3',
+            'south': '6',
+            'west': '1',
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': 'boss',
+            'east': None,
+            'south': '4',
+            'west': '2',
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': '3',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': '1',
+            'east': '6',
+            'south': None,
+            'west': None,
+            'room_type': 'DEFDOWN'
+        },
+        '6': {
+            'id': '6',
+            'north': '2',
+            'east': None,
+            'south': None,
+            'west': '5',
+            'room_type': 'POISON'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': None,
+            'south': '3',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 15
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '1',
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '2',
+            'east': '0',
+            'south': '3',
+            'west': '4',
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': None,
+            'east': None,
+            'south': '1',
+            'west': None,
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': '1',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'POISON'
+        },
+        '4': {
+            'id': '4',
+            'north': 'boss',
+            'east': '1',
+            'south': '5',
+            'west': None,
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': '4',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': None,
+            'south': '4',
+            'west': None,
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 16
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': '1',
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '2',
+            'east': '0',
+            'south': None,
+            'west': None,
+            'room_type': None
+        },
+        '2': {
+            'id': '2',
+            'north': 'boss',
+            'east': '4',
+            'south': '1',
+            'west': '3',
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': '5',
+            'east': 'boss',
+            'south': '2',
+            'west': None,
+            'room_type': None
+        },
+        '4': {
+            'id': '4',
+            'north': '6',
+            'east': None,
+            'south': '2',
+            'west': 'boss',
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': None,
+            'east': None,
+            'south': '3',
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        '6': {
+            'id': '6',
+            'north': None,
+            'east': None,
+            'south': '4',
+            'west': None,
+            'room_type': 'DEFUP'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': '4',
+            'south': '2',
+            'west': '3',
+            'room_type': 'BOSS'
+        }
+    },
+    {  # 17
+        '0': {
+            'id': '0',
+            'north': '1',
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'VISITED'
+        },
+        '1': {
+            'id': '1',
+            'north': '2',
+            'east': None,
+            'south': '0',
+            'west': None,
+            'room_type': 'ATTUP'
+        },
+        '2': {
+            'id': '2',
+            'north': '3',
+            'east': None,
+            'south': '1',
+            'west': None,
+            'room_type': None
+        },
+        '3': {
+            'id': '3',
+            'north': '4',
+            'east': None,
+            'south': '2',
+            'west': None,
+            'room_type': 'DEFUP'
+        },
+        '4': {
+            'id': '4',
+            'north': '5',
+            'east': None,
+            'south': '3',
+            'west': None,
+            'room_type': None
+        },
+        '5': {
+            'id': '5',
+            'north': 'boss',
+            'east': None,
+            'south': '4',
+            'west': None,
+            'room_type': 'HEAL'
+        },
+        'boss': {
+            'id': 'boss',
+            'north': None,
+            'east': None,
+            'south': '5',
             'west': None,
             'room_type': 'BOSS'
         }

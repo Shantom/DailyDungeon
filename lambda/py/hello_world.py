@@ -80,21 +80,23 @@ def launch_request_handler(handler_input):
 
         speech_text += 'It\'s been ' + speech_time + ' since your last login. '
 
+        card_text = 'Offline time: ' + str(datetime.timedelta(seconds=passing_time)) + '\nExp obtained:{} \n'.format(loot_exp)
+
         if cur_char.messages:
             speech_text += 'You have unread messages. '
+            card_text += 'You have unread messages. \n'
 
         attr['character'] = cur_char.to_dict()
 
-        card = ui.SimpleCard(
-            title='Welcome to Daily Dungeon',
-            content='Offline time: ' + str(datetime.timedelta(seconds=passing_time)) +
-            '\n Coin obtained: {}'.format(loot_coin) +
-            '\n Exp obtained:{}'.format(loot_exp)
-        )
-
     if 'in_maze' in attr and (attr['in_maze'] == 'IN' or attr['in_maze'] == 'WAIT'):
         speech_text += 'You didnt finish your maze. Say resume the maze to go back to where you were. '
+        card_text += 'You did not finish your maze. '
         attr['in_maze'] = 'WAIT'
+
+    card = ui.SimpleCard(
+        title='Welcome to Daily Dungeon',
+        content=card_text
+    )
 
     handler_input.attributes_manager.save_persistent_attributes()
 
@@ -130,7 +132,7 @@ def enter_maze_intent_handler(handler_input):
     attr = handler_input.attributes_manager.persistent_attributes
     attr['in_maze'] = 'IN'
     cur_char = Character(attr['character'])
-    floor =  cur_char.floor
+    floor = cur_char.floor
     maze = Maze(floor=floor)
     attr['maze'] = maze.to_dict()
 
@@ -323,7 +325,7 @@ def boss_info_intent_handler(handler_input):
             speech_text += 'Also, it can use {}'.format(info['skill'])
 
         title = 'Boss Info: ' + query.title()
-        text = 'HP: {} Attack: {} Defense: {}\n Agility: {} Dexterity: {}'.format(
+        text = 'HP: {} \nAttack: {} Defense: {}\n Agility: {} Dexterity: {}'.format(
             info['hp'], info['attack'], info['defense'], info['speed'], info['cast_speed'])
         if len(info['skill']):
             text += '\n Skill: {}'.format(info['skill'])
@@ -339,7 +341,7 @@ def boss_info_intent_handler(handler_input):
         if supports_display(handler_input):
             img = Image(sources=[ImageInstance(
                 url=data.MONSTER_AVATAR[query])])
-            primary_text = 'HP: {} Attack: {} Defense: {}<br/> Agility: {} Dexterity: {}'.format(
+            primary_text = 'HP: {} <br/>Attack: {} <br/>Defense: {}<br/> Agility: {} <br/>Dexterity: {}'.format(
                 info['hp'], info['attack'], info['defense'], info['speed'], info['cast_speed'])
             if len(info['skill']):
                 primary_text += '<br/> Skill: {}'.format(info['skill'])
@@ -368,8 +370,14 @@ def check_status_intent_handler(handler_input):
     speech_text += 'He has attack of {} and defense of {}. '.format(
         cur_char.attack, cur_char.defense)
 
-    card = ui.SimpleCard(title='Character Status', content='\tLevel:{}\tFloor:{}\n\tJob:{}\n\tHP:{}\tMP:{}\n\tAttack:{}\tDefense:{}'.format(
-        cur_char.level, cur_char.floor, cur_char.job, cur_char.hp, cur_char.mp, cur_char.attack, cur_char.defense))
+    card =ui.StandardCard(
+                title='Character Status',
+                text='\tLevel: {}    Floor: {}\nHP: {}    MP: {}\nAttack: {}    Defense: {}\nAgility: {}    Dexterity: {}\nCurrent Skill: {}'.format(cur_char.level, cur_char.floor, cur_char.hp, cur_char.mp, cur_char.attack, cur_char.defense, cur_char.speed, cur_char.cast_speed,cur_char.cur_skill),
+                image=ui.Image(
+                    small_image_url=data.PLAYER_STANDING,
+                    large_image_url=data.PLAYER_STANDING
+                ))
+
 
     handler_input.response_builder.speak(
         speech_text).set_card(card).set_should_end_session(False)

@@ -19,7 +19,7 @@ When Lin finally defeated the four beasts and entered the final floor, only to f
 ### Game Features
 
 Daily Dungeon is a role-playing game. Players can help Lin through the maze, beat a variety of boss with reasonable skill. 
-When players is not on-line, that is, not logged in to the game, Lin will automatically beat the monster on the current floor to gain experience. When the experience value meets the amount required by Lin's current level, Lin will automatically level up and get his ability improved. 
+When players is not on-line, i.e., not logged in to the game, Lin will automatically beat the monster on the current floor to gain experience. When the experience value meets the amount required by Lin's current level, Lin will level up and get his ability improved. 
 When Lin comes to a specific level, he will learn specific skills. Players can help Lin equip a certain skill to deal with different bosses. 
 Players can guide Lin through the maze, in which Lin may encounter many different random events that increase or decrease Lin's temporary statistics.
 
@@ -76,13 +76,13 @@ This game uses fully automatic combat. Each side, player or monster, has two pro
 
 **Defense**: It determines how much damage can be offset each time it is hit. 
 
-**HP**(Hit Point): the amount of health.
+**HP**(Hit Point): The amount of health.
 
 **MP**(Magic Point): Points consumed by skills usage. 
 
 **Agility**: Normal attack speed. A normal attack consumes round of (100/agility) amount of normal attack gauge.
 
-**Dexterity**: Skill cast speed. A skill consumes round of (skill_cast/dexterity) action value, where skill_cast is an attribute of a skill.
+**Dexterity**: Skill cast speed. A skill consumes round of (skill_cast/dexterity) cast skill gauge, where skill_cast is an attribute of a skill.
 
 ### Damage Calculation
 
@@ -90,7 +90,7 @@ Normal Attack: Attacker's attack - defender's defense.
 
 Skill: (Attacker's attack - defender's defense) * skill's rate.
 
-Bleeding: If some side is bleeding, he/it will lose 10% of max HP every time he/it normal attacks.
+Bleeding: If some side is bleeding, he/it will lose 10% of max HP every time he/it attacks.
 
 ### Controls
 
@@ -108,9 +108,9 @@ Yellow Dragon: The master, central guardian.
 
 ### Possible Skills
 
-Thump: a high rate attack skill.
+Thump: A high rate attack skill.
 
-Pierce: a higher rate attack skill.
+Pierce: A higher rate attack skill.
 
 Blade: Bleeding. Lose HP when normal attacking.
 
@@ -169,7 +169,7 @@ To declare this mapping, the following inputs are supplied:
 
 A skill can have more than one model in different languages. In this skill, I use only one model, en_US. 
 
-Users say a skill's **invocation name** to begin an interaction with a particular custom skill. This skill's invocation name is "Daily Dungeon", users can say: "Open Daily Dungeon" to launch the skill. 
+Users say a skill's **invocation name** to begin an interaction with a particular custom skill. This skill's invocation name is "Daily Dungeon". Users can say: "Open Daily Dungeon" to launch the skill. 
 
 #### Lambda Function
 
@@ -221,13 +221,13 @@ For most of my intents, I set the `shouldEndSession`to `false`, because a game s
 
 Interactions between a user and an Alexa device can include **home cards** displayed in the Amazon Alexa App, the companion app available for Fire OS, Android, iOS, and desktop web browsers. An Alexa-enabled device with a screen also displays cards that have been designed for display in the Alexa app.
 
-差一张图
+![card](../images/card.jpg)
 
 #### Display Templates
 
-A skill developed for Alexa-enabled devices with a screen can also support **display templates**, which are similar to cards and are viewed directly on the screen.
+A skill developed for Alexa-enabled devices with a screen can also support **display templates**, which are similar to *cards* and are viewed directly on the screen.
 
-差一张图
+![display](../images/display.jpg)
 
 ### AWS Lambda
 
@@ -259,7 +259,7 @@ The following is some key metadata in my manifest, which is actually in JSON for
     - description: "An role playing game with idle game element in it."
     - summary: "Launch the skill"
     - example phrases: ["open daily dungeon"]
-  - category: "GAME"
+  - category: "GAMES"
 - APIs
   - custom
     - endpoint                            #  where the service locates
@@ -370,7 +370,7 @@ The handler firstly checks whether there are already persistent attributes in th
 
 Also, the attribute `in_maze` tells if Lin is still in a maze or not, which will help users remember where they were at the end of last conversation with Alexa.
 
-图
+![launch](../images/launch.jpg)
 
 #### CheckMessagesIntent
 
@@ -422,6 +422,8 @@ Players can review the last battle log for next try to fight the boss. With the 
 
 The handler loads the battle log attribute, if any. Then let Alexa read it out. If there is a screen on the device, it will display the details of every move of both sides.
 
+![battle.jpg](https://s2.ax1x.com/2019/07/01/Z3fAje.jpg)
+
 #### ChangeSkillsIntent
 
 It is quite normal when Lin successfully beat the boss of the previous floor but fails on the current floor with the same skill equipped. Therefore, players need to make a choice on which skill to use on a certain boss.
@@ -442,9 +444,11 @@ The handler retrieves information from `data.py` and then gives it to users with
 
 #### CheckStatusIntent
 
-This intent is to tell the player the current statistics of Lin, including attack, defense, hp, mp, level, floor, exp and the current equipped skill.
+This intent is to tell the player the current statistics of Lin, including attack, defense, hp, mp, level, floor, and the current equipped skill.
 
 The handler loads the information from database and then gives it to users with voice and display.
+
+![stats](../images/stats.jpg)
 
 #### CheckSkillsIntent
 
@@ -452,35 +456,122 @@ This intent is to tell the player what skills has Lin learned. Players can pick 
 
 The handler loads the information form database and then gives it to users with voice and display.
 
-### Module Design
+### Other Classes
+
+To make the handlers code clear and organized, I implemented several classes and data for soft coding, including Character, Mob, Battle, Maze, Data, and their methods for the handlers to use. For more details, see Chapter [Module Design](#Module Design).
+
+## Module Design
+
+### Handlers
+
+The intent handlers are in the `hello_world.py` file, which is the lambda function entry. This part has been explained in section [Intent Handlers](#Intent Handers).
+
+### Character & Mob
+
+This module includes `Character`, `TempChraracter` and `Mob`.
 
 #### Character
 
+Lin's game statistics, including attack, defense, last offline time, messages and etc., are taken as attributes in `Character` class. It has methods `to_dict` and `from_dict` to convert them to Python dict format and load from a Python dict.
+
+The `claim_loot` method calculates how long it has been since the user last logged out. According to the time difference, along with the floor value, it gives Lin a certain number of EXPs. When Lin's EXP value meets the number to level up, Lin levels up and increases his statistics. If a skill should be acquired on this level, a message will be stored to notice the player.
+
+The `battle_with_boss` method takes a parameter of `TempCharacter`. It retrieves the floor-related boss. It creates a `Battle` object to manage the whole battle between Lin and the boss. When it finished, it returns the result and battle log.
+
+#### TempCharacter
+
+This class is to store the temporary statistics obtained in random events. It has similar attributes with `Character` plus attack gauge and cast gauge. 
+
+Also, it has `process` method requiring parameters of current room and character. Depending on the room's type, i.e., the random event, it modifies its attributes.
+
 #### Mob
+
+The Mob class is to store information of bosses. It is simple that there are only basic attributes and a `from_dict` method in it.
+
+### Battle Manager
+
+This module includes `Battle` class and `Timer` class.
+
+#### Timer
+
+When there is a battle, there should be timers to count the time units going by. It decides whether a debuff, such as Frozen and Bleeding, should end.
+
+Each side in a battle has a timer. It `tick`s to let the attack and cast gauges increase by 1. Also, it counts how long the debuffs have existed and let it go when it is enough.
 
 #### Battle
 
-#### Maze
+The `fight` method is the main method in `Battle` class. It proceeds an entire battle with normal attacks and skills.
 
-#### Data
+The following is the pseudo code of `fight`.
 
-## 数值设计
+```pseudocode
+WHILE NOT check_death():
+	tick()
+	
+	# Check if player can normal attack
+	IF player.attack_gauge>= 100/(player.agility/100)
+		player.normal_attack()
+	END
+	IF check_death()
+		BREAK
+	END
+	
+	# Check if play can use skill
+	IF player.cast_gauge >= skill['cast']/(self.player.dexterity/100)
+		player.move()
+	END
+	IF check_death()
+		BREAK
+	END
+	
+	# Check if the monster can attack or use skill
+	...
+END
+log('Who won and who died.')
+RETURN check_death()
+```
 
-技能
+In `normal_attack`, the attack_gauge is reset to 0 at first. Then it calculates the damage using attack and defense, and subtracts the damage value from the enemy's HP. If there is a *Bleeding* status, it subtracts 10% HP from own HP. Then everything happened should be logged.
 
-属性
+In `use_skill`, similar to `normal_attack`, the cast_gauge is reset to 0. Then it calculates the damage using attack and defense and the skill's rate, and subtracts the damage value from the enemy's HP. Also, the caster should consume some MP depending on the skill. If the skill has an effect like *Bleeding*, the effect is added to the enemy. Then everything happened should be logged.
 
-单位时间收益
+The `check_death` is to check if either side has got its HP to 0. If so, the battle ends.
 
-boss属性
+The `log` is to record what happened exactly throughout the battle. It includes some formats of log information, voice, text, card, display.
 
-随机事件
+### Maze
 
-迷宫设计
+This module includes `Maze` and `Room`.
+
+In `Room`, there are several attributes, *id*, *room ids in four directions*, *room_type* and *is_visited*. It has `to_dict` and `from_dict` methods, because I need to store it in the database.
+
+The `Maze` class consists of the current `Room` and a `Room` set. It needs to be initiated with the floor number. It retrieves the constant data from `data.py`.
+
+### Data
+
+In `data.py`, there are some constant data that other modules may use.
+
+`PLAYER_AVATAR`, `MONSTER_AVATAR` and `EMOJI_STATUS` are image URLs. In some intents, these images need to be displayed on the screen.
+
+`EXP_TO_LEVEL_UP` is a list of how many EXP Lin need to level up.
+
+`EXP_PER_ROUND` is a list of how many EXP Lin can obtain per 20 seconds during offline time.
+
+`BOSS_OF_FLOOR` is a list of bosses on each floor.
+
+`MOB_INFO` is a dictionary of statistics of all bosses.
+
+`SKILL_ACQUIRE` is a list of which skill Lin can acquire on each level.
+
+`SKILL_INFO` is a dictionary of statistics of all skills.
+
+`MAZE_OF_FLOOR` is a list of mazes on each floor.
+
+## Appendix
+
+### Mazes
 
 
-
-保证游戏过程平滑
 
 ## 游戏基本流程
 

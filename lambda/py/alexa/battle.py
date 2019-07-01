@@ -65,7 +65,7 @@ class Battle:
             self.log_move(False, self.player.hp, self.mob.hp, 'HIT',
                           amount, self.tp.effects, self.tm.effects)
 
-    def move(self, move, is_player=True):
+    def use_skill(self, move, is_player=True):
         if is_player:
             if self.player.mp >= move['mp']:
                 self.player.mp -= move['mp']
@@ -155,7 +155,7 @@ class Battle:
             if player_skill:
                 player_skill = data.SKILL_INFO[player_skill]
                 if self.tp.cast_gauge >= player_skill['cast'] / (self.player.cast_speed / 100):
-                    self.move(player_skill, True)
+                    self.use_skill(player_skill, True)
                 if self.check_death():
                     break
 
@@ -170,7 +170,7 @@ class Battle:
             if mob_skill:
                 mob_skill = data.SKILL_INFO[mob_skill]
                 if self.tm.cast_gauge >= mob_skill['cast'] / (self.mob.cast_speed / 100):
-                    self.move(mob_skill, False)
+                    self.use_skill(mob_skill, False)
                 if self.check_death():
                     break
 
