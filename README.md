@@ -567,15 +567,13 @@ In `data.py`, there are some constant data that other modules may use.
 
 `MAZE_OF_FLOOR` is a list of mazes on each floor.
 
-## Appendix
-
-### Mazes
 
 
+## Game Balance
 
-## 游戏基本流程
+It is very hard to come up with proper numbers for character and boss statistics. I tried to make it as balance as I can. I expect that players launch my Daily Dungeon every 4 to 12 hours, so that they may have a good experience that it is neither to hard nor too simple to pass a floor.
 
-
+## References
 
 
 

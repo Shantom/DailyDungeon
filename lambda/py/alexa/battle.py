@@ -126,7 +126,7 @@ class Battle:
 
         else:
             ret.image = Image(sources=[ImageInstance(
-                url=data.MONSTER_AVATAR['ratpier'])])
+                url=data.MONSTER_AVATAR[self.mob.name.lower()])])
 
         p_st = [data.EMOJI_STATUS[x] for x in p_st]
         m_st = [data.EMOJI_STATUS[x] for x in m_st]

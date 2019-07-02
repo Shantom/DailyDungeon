@@ -18,7 +18,7 @@ class Character:
             self.hp = 200
             self.mp = 100
             self.cur_skill = 'Thump'
-            self.skills = ['Thump', 'Blizzard', 'Blade']
+            self.skills = ['Thump']
             self.speed = 100
             self.cast_speed = 100
             self.last_offline_time = int(time.time())
@@ -41,9 +41,11 @@ class Character:
             self.defense += 4
             self.hp += 36
             self.mp += 16
-            if data.SKILL_ACQUIRE[self.level]:
-                self.new_msg('You have acquired a new skill, {}. '.format(
-                    data.SKILL_ACQUIRE[self.level]))
+            new_skill = data.SKILL_ACQUIRE[self.level]
+            if new_skill:
+                self.skills.append(new_skill)
+                self.new_msg(
+                    'You have acquired a new skill, {}. '.format(new_skill))
 
     def gain_exp_by_time(self, passing_time):
         loot = (passing_time // self.sec_per_round) * \
@@ -56,14 +58,15 @@ class Character:
         self.coin += loot
         return loot
 
-    def claim_loot(self):
-        cur_time = int(time.time())
-        passing_time = cur_time - self.last_offline_time
-        loot_coin = self.gain_coin_by_time(passing_time)
+    def claim_loot(self, passing_time=None):
+        if not passing_time:
+            cur_time = int(time.time())
+            passing_time = cur_time - self.last_offline_time
+        # loot_coin = self.gain_coin_by_time(passing_time)
         loot_exp = self.gain_exp_by_time(passing_time)
         self.check_level_up()
         self.last_offline_time = int(time.time())
-        return passing_time, loot_coin, loot_exp
+        return passing_time, loot_exp
 
     def to_dict(self):
         ret = dict()

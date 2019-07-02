@@ -11,6 +11,7 @@ import datetime
 import uuid
 import json
 from collections import defaultdict
+import re
 
 from ask_sdk.standard import StandardSkillBuilder
 from ask_sdk_core.utils import is_request_type, is_intent_name, get_intent_name, get_slot_value
@@ -54,15 +55,14 @@ def launch_request_handler(handler_input):
             "Welcome to Daily Dungeon. "
             "Seems you don't have a character here, so I just created one for you. ")
 
-        card = ui.SimpleCard(
-            title='Welcome to Daily Dungeon', content='Character created successfully.')
+        card_text='Character created successfully.'
 
     else:
         # load the char and claim trophy
 
         attr = handler_input.attributes_manager.persistent_attributes
         cur_char = Character(attr['character'])
-        passing_time, loot_coin, loot_exp = cur_char.claim_loot()
+        passing_time, loot_exp = cur_char.claim_loot()
         speech_text = 'Welcome to Daily Dungeon. '
         day = passing_time // (24 * 3600)
         hour = (passing_time % (24 * 3600)) // 3600
@@ -103,6 +103,47 @@ def launch_request_handler(handler_input):
     handler_input.response_builder.speak(
         speech_text).ask('what would you like to do').set_card(card)
 
+    return handler_input.response_builder.response
+
+def YTDurationToSeconds(duration):
+    def _js_parseInt(string):
+        return int(''.join([x for x in string if x.isdigit()]))
+    match = re.match('PT(\d+H)?(\d+M)?(\d+S)?', duration).groups()
+    hours = _js_parseInt(match[0]) if match[0] else 0
+    minutes = _js_parseInt(match[1]) if match[1] else 0
+    seconds = _js_parseInt(match[2]) if match[2] else 0
+    return hours * 3600 + minutes * 60 + seconds
+
+@sb.request_handler(can_handle_func=is_intent_name("FarmIntent"))
+def farm_intent_handler(handler_input):
+    # type: (HandlerInput) -> Response
+    attr = handler_input.attributes_manager.persistent_attributes
+    cur_char = Character(attr['character'])
+
+    duration = get_slot_value(handler_input, 'duration')
+    if not duration.startswith('PT'):
+        duration = 'PT24H'
+    duration=YTDurationToSeconds(duration)
+    _, loot_exp = cur_char.claim_loot(duration)
+
+    speech_text = 'You got {} experience points. '.format(loot_exp)
+
+    card_text = 'Farm time: ' + str(datetime.timedelta(seconds=duration)) + '\nExp obtained:{} \n'.format(loot_exp)
+
+    if cur_char.messages:
+        speech_text += 'You have unread messages. '
+        card_text += 'You have unread messages. \n'
+
+    attr['character'] = cur_char.to_dict()
+    
+    card = ui.SimpleCard(
+        title='Farm Result (Debug Only)',
+        content=card_text
+    )
+
+    handler_input.attributes_manager.save_persistent_attributes()
+    handler_input.response_builder.speak(
+        speech_text).set_card(card).set_should_end_session(False)
     return handler_input.response_builder.response
 
 
@@ -282,17 +323,18 @@ def battle_log_intent_handler(handler_input):
     # type: (HandlerInput) -> Response
 
     session_attr = handler_input.attributes_manager.session_attributes
-    item_list = session_attr['last_battle_log_vec']
     if 'last_battle_log' in session_attr.keys():
         speech_text = '.\n'.join(session_attr['last_battle_log'])
         logger.info('Telling battle info.' + speech_text)
 
-        handler_input.response_builder.add_directive(
-            RenderTemplateDirective(
-                ListTemplate1(
-                    title='Battle Review',
-                    list_items=item_list
-                )))
+        if supports_display(handler_input):
+            item_list = session_attr['last_battle_log_vec'] 
+            handler_input.response_builder.add_directive(
+                RenderTemplateDirective(
+                    ListTemplate1(
+                        title='Battle Review',
+                        list_items=item_list
+                    )))
 
     else:
         speech_text = 'Seems you don\'t have a battle.'
@@ -398,6 +440,7 @@ def change_skill_intent_handler(handler_input):
         cur_char.cur_skill = skill
         speech_text = 'Changed your skill to {}. '.format(skill)
 
+    attr['character'] = cur_char.to_dict()
     handler_input.attributes_manager.save_persistent_attributes()
 
     handler_input.response_builder.speak(
@@ -439,7 +482,7 @@ def skill_info_intent_handler(handler_input):
                 url=data.MONSTER_AVATAR['?'])])
             primary_text = 'Damage Rate: {}<br/> Cast Time: {} MP cost: {}'.format(
                 info['rate'], info['cast'], info['mp'])
-            if len(info['effect']):
+            if info['effect']:
                 primary_text += '<br/> Effect: {}'.format(info['effect'])
             primary_text = get_rich_text_content(primary_text)
             handler_input.response_builder.add_directive(

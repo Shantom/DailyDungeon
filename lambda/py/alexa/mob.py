@@ -5,6 +5,7 @@ class Mob:
     def __init__(self, name=None):
         if not name:
             name = 'Awakened Shrub'
+        self.name = name
         self.from_dict(name)
         self.attack_gauge = 100
         self.cast_gauge = 1000

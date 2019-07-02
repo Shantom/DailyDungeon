@@ -72,6 +72,19 @@
                     "samples": []
                 },
                 {
+                    "name": "FarmIntent",
+                    "slots": [
+                        {
+                            "name": "duration",
+                            "type": "AMAZON.DURATION"
+                        }
+                    ],
+                    "samples": [
+                        "farm for {duration}",
+                        "farm {duration}"
+                    ]
+                },
+                {
                     "name": "BossInfoIntent",
                     "slots": [
                         {
@@ -141,6 +154,7 @@
                     ],
                     "samples": [
                         "tell me about {skill}",
+                        "tell me about skill {skill}",
                         "what is {skill}"
                     ]
                 },

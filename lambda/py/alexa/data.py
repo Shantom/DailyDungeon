@@ -2,10 +2,28 @@ PLAYER_AVATAR = 'https://s2.ax1x.com/2019/07/01/Z3fCh6.jpg'
 PLAYER_STANDING = 'https://s2.ax1x.com/2019/07/01/Z36YHP.png'
 MONSTER_AVATAR = {
     '?': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+
     'boarbow': 'https://www.pixilart.com/images/art/7a500637e457561.png',
     'ratpier': 'https://www.pixilart.com/images/art/3502890adb853ee.png',
     'broadbull': 'https://www.pixilart.com/images/art/c04bf692bb7c44b.png',
-    'black tortoise': 'https://www.pixilart.com/images/art/81970b006afbac3.png'
+    'black tortoise': 'https://www.pixilart.com/images/art/81970b006afbac3.png',
+
+    'tigermortar': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'bunnyblast': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'drident': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'azure dragon': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+
+    'whiptail': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'thoroughblade': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'ramram': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'vermilion bird': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+
+    'hammerkong': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'kataroost': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'chakanine': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+    'white tiger': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png',
+
+    'yellow dragon': 'https://www.pixilart.com/images/art/5c9c4148ae83dd8.png'
 }
 
 
@@ -16,20 +34,20 @@ EMOJI_STATUS = {
 
 EXP_TO_LEVEL_UP = [
     30,  # 1
-    1000,
-    2700,
-    5000,
-    8000,  # 5
+    2000,
+    5700,
     15000,
-    30000,
-    40000,
-    50000,
-    61000,  # 10
-    80000,
-    103000,
-    134000,
-    156000,
-    180000,  # 15
+    48000,  # 5
+    105000,
+    160000,
+    240000,
+    320000,
+    430000,  # 10
+    600000,
+    830000,
+    1134000,
+    1460000,
+    1800000,  # 15
     999999999999
 ]
 
@@ -51,7 +69,8 @@ EXP_PER_ROUND = [
     97,
     105,
     120,  # 15
-    128
+    128,
+    150
 ]
 
 BOSS_OF_FLOOR = [
@@ -75,19 +94,23 @@ BOSS_OF_FLOOR = [
     'chakanine',
     'white tiger',
 
-    'yellow dragon'
+    'yellow dragon',
+    None
+
 ]
 
 MOB_INFO = {
+    # 1
     'boarbow': {
         'attack': 20,
         'defense': 0,
-        'hp': 2000,
-        'mp': 0,
+        'hp': 200,
+        'mp': 100,
         'skill': 'Thump',
         'speed': 100,
         'cast_speed': 100
     },
+    # 2
     'ratpier': {
         'attack': 50,
         'defense': 0,
@@ -95,52 +118,181 @@ MOB_INFO = {
         'mp': 100,
         'skill': 'Thump',
         'speed': 100,
-        'cast_speed': 50
+        'cast_speed': 100
     },
+    # 3
     'broadbull': {
-        'attack': 200,
+        'attack': 70,
         'defense': 0,
-        'hp': 3000,
-        'mp': 0,
-        'skill': 'Double Strafe',
+        'hp': 600,
+        'mp': 100,
+        'skill': 'Thump',
         'speed': 100,
         'cast_speed': 100
     },
+    # 4
     'black tortoise': {
-        'attack': 200,
+        'attack': 70,
+        'defense': 200,
+        'hp': 1000,
+        'mp': 0,
+        'skill': 'Double Strafe',
+        'speed': 60,
+        'cast_speed': 10
+    },
+
+    # 5
+    'tigermortar': {
+        'attack': 75,
         'defense': 0,
-        'hp': 3000,
+        'hp': 700,
+        'mp': 0,
+        'skill': 'Thump',
+        'speed': 100,
+        'cast_speed': 100
+    },
+    # 6
+    'bunnyblast': {
+        'attack': 60,
+        'defense': 0,
+        'hp': 800,
+        'mp': 100,
+        'skill': 'Thump',
+        'speed': 120,
+        'cast_speed': 100
+    },
+    # 7
+    'drident': {
+        'attack': 90,
+        'defense': 0,
+        'hp': 900,
+        'mp': 0,
+        'skill': 'Thump',
+        'speed': 100,
+        'cast_speed': 100
+    },
+    # 8
+    'azure dragon': {
+        'attack': 200,
+        'defense': 50,
+        'hp': 900,
+        'mp': 0,
+        'skill': 'Double Strafe',
+        'speed': 150,
+        'cast_speed': 100
+    },
+
+    # 9
+    'whiptail': {
+        'attack': 120,
+        'defense': 30,
+        'hp': 1000,
+        'mp': 0,
+        'skill': 'Thump',
+        'speed': 100,
+        'cast_speed': 100
+    },
+    # 10
+    'thoroughblade': {
+        'attack': 125,
+        'defense': 30,
+        'hp': 1000,
+        'mp': 100,
+        'skill': 'Thump',
+        'speed': 100,
+        'cast_speed': 100
+    },
+    # 11
+    'ramram': {
+        'attack': 130,
+        'defense': 30,
+        'hp': 1100,
+        'mp': 0,
+        'skill': 'Thump',
+        'speed': 100,
+        'cast_speed': 100
+    },
+    # 12
+    'vermilion bird': {
+        'attack': 200,
+        'defense': 60,
+        'hp': 1800,
+        'mp': 0,
+        'skill': 'Double Strafe',
+        'speed': 100,
+        'cast_speed': 80
+    },
+
+    # 13
+    'hammerkong': {
+        'attack': 150,
+        'defense': 30,
+        'hp': 1200,
+        'mp': 0,
+        'skill': 'Thump',
+        'speed': 100,
+        'cast_speed': 50
+    },
+    # 14
+    'kataroost': {
+        'attack': 150,
+        'defense': 30,
+        'hp': 1200,
+        'mp': 100,
+        'skill': 'Thump',
+        'speed': 120,
+        'cast_speed': 50
+    },
+    # 15
+    'chakanine': {
+        'attack': 150,
+        'defense': 30,
+        'hp': 1200,
+        'mp': 0,
+        'skill': 'Thump',
+        'speed': 100,
+        'cast_speed': 70
+    },
+    # 16
+    'white tiger': {
+        'attack': 170,
+        'defense': 50,
+        'hp': 2000,
         'mp': 0,
         'skill': 'Double Strafe',
         'speed': 100,
         'cast_speed': 100
     },
 
+    # 17
+    'yellow dragon': {
+        'attack': 250,
+        'defense': 80,
+        'hp': 3000,
+        'mp': 0,
+        'skill': 'Double Strafe',
+        'speed': 100,
+        'cast_speed': 100
+    },
 }
 
 SKILL_ACQUIRE = [
     None,
-    'Thump',
     None,
     'Pierce',
     None,
-    'Blade',
+    None,
+    'Blade',  # 5
+    None,
     None,
     'Cold Bolt',
     None,
+    None,  # 10
     'Cross Strike',
     None,
+    None,
     'Blizzard',
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
-    None,
+    None,  # 15
     None,
 ]
 
@@ -173,12 +325,33 @@ SKILL_INFO = {
         'mp': 30,
         'effect': None
     },
+    'Pierce': {
+        'name': 'Pierce',
+        'rate': 290,
+        'cast': 190,
+        'mp': 30,
+        'effect': None
+    },
     'Blade': {
         'name': 'Blade',
         'rate': 150,
         'cast': 500,
         'mp': 30,
         'effect': 'Bleeding'
+    },
+    'Cross Strike': {
+        'name': 'Cross Strike',
+        'rate': 190,
+        'cast': 400,
+        'mp': 30,
+        'effect': 'Bleeding'
+    },
+    'Cold Bolt': {
+        'name': 'Cold Bolt',
+        'rate': 150,
+        'cast': 500,
+        'mp': 40,
+        'effect': 'Frozen'
     },
     'Blizzard': {
         'name': 'Blizzard',
@@ -1207,6 +1380,16 @@ MAZE_OF_FLOOR = [
             'south': '5',
             'west': None,
             'room_type': 'BOSS'
+        }
+    },
+    {  # 18
+        '0': {
+            'id': '0',
+            'north': None,
+            'east': None,
+            'south': None,
+            'west': None,
+            'room_type': 'VISITED'
         }
     }
 ]
